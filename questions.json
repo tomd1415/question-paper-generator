@@ -1,0 +1,46 @@
+{
+  "title": "OCR GCSE Computing - Sample Questions",
+  "questions": [
+    {
+      "text": "What does CPU stand for?",
+      "marks": 1
+    },
+    {
+      "text": "Explain the purpose of RAM in a computer system.",
+      "marks": 2
+    },
+    {
+      "text": "Write a Python program that prints 'Hello, World!' to the screen.",
+      "marks": 2
+    },
+    {
+      "text": "Describe the difference between volatile and non-volatile memory.",
+      "marks": 2
+    },
+    {
+      "text": "Convert the binary number 1101 to decimal.",
+      "marks": 1
+    },
+    {
+      "text": "Explain what a syntax error is in programming.",
+      "marks": 1
+    },
+    {
+      "text": "Write a Python function called 'add' that takes two numbers and returns their sum.",
+      "marks": 3
+    },
+    {
+      "text": "What is an algorithm?",
+      "marks": 1
+    },
+    {
+      "text": "Explain the purpose of the operating system.",
+      "marks": 2
+    },
+    {
+      "text": "List two input devices and two output devices.",
+      "marks": 2
+    }
+  ]
+}
+

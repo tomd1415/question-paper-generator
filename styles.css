@@ -1,0 +1,233 @@
+/* Base styles */
+body {
+    font-family: Arial, sans-serif;
+    color: #000;
+    margin: 0;
+    padding: 0;
+}
+
+/* Font size variables */
+:root {
+    --base-font-size: 12pt;
+    --heading1-size: 20pt;
+    --heading2-size: 18pt;
+    --heading3-size: 16pt;
+    --answer-space-multiplier: 1;
+}
+
+/* Font size classes */
+.font-size-default {
+    --base-font-size: 12pt;
+    --heading1-size: 20pt;
+    --heading2-size: 18pt;
+    --heading3-size: 16pt;
+    --answer-space-multiplier: 1;
+}
+
+.font-size-18pt {
+    --base-font-size: 18pt;
+    --heading1-size: 28pt;
+    --heading2-size: 24pt;
+    --heading3-size: 22pt;
+    --answer-space-multiplier: 1.5;
+}
+
+.font-size-36pt {
+    --base-font-size: 36pt;
+    --heading1-size: 54pt;
+    --heading2-size: 48pt;
+    --heading3-size: 44pt;
+    --answer-space-multiplier: 3;
+}
+
+/* Apply font sizes */
+body, h1, h2, h3, p, li, label, select, input, button, textarea {
+    font-size: var(--base-font-size);
+}
+
+h1 {
+    font-size: var(--heading1-size);
+}
+
+h2 {
+    font-size: var(--heading2-size);
+}
+
+h3 {
+    font-size: var(--heading3-size);
+}
+
+.code-block {
+    font-family: Consolas, monospace;
+}
+
+.controls {
+    margin: 20px;
+}
+
+.controls label {
+    margin-right: 10px;
+}
+
+.controls input {
+    font-size: var(--base-font-size);
+    padding: 5px;
+}
+
+.controls button {
+    font-size: var(--base-font-size);
+    padding: 5px 10px;
+    margin-right: 10px;
+}
+
+/* Common styles */
+.header {
+    text-align: center;
+    margin-bottom: 20px;
+    page-break-after: avoid;
+}
+
+.header h1 {
+    margin: 0;
+}
+
+.header h2 {
+    margin: 5px 0;
+}
+
+.info {
+    margin-bottom: 20px;
+    font-weight: bold;
+}
+
+.info label {
+    margin-right: 10px;
+}
+
+.info input {
+    font-size: var(--base-font-size);
+    padding: 5px;
+}
+
+.section {
+    margin-bottom: 20px;
+    page-break-inside: avoid;
+}
+
+.section h3 {
+    border-bottom: 1px solid #000;
+    padding-bottom: 5px;
+}
+
+.question {
+    margin-bottom: 30px;
+    page-break-inside: avoid;
+}
+
+.question p {
+    margin: 5px 0;
+}
+
+.answer-space {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    page-break-inside: avoid;
+}
+
+.answer-space textarea {
+    width: 100%;
+    height: calc(var(--answer-space-height) * var(--answer-space-multiplier));
+    font-size: var(--base-font-size);
+    padding: 5px;
+    box-sizing: border-box;
+}
+
+.comment-space {
+    margin-top: 10px;
+}
+
+.comment-space textarea {
+    width: 100%;
+    height: 80px;
+    font-size: var(--base-font-size);
+    padding: 5px;
+    box-sizing: border-box;
+}
+
+.correct-answer {
+    background-color: #e0ffe0;
+    padding: 10px;
+    margin-top: 10px;
+    border: 1px solid #0a0;
+    display: none; /* Hidden until "Reveal Answer" is clicked */
+}
+
+.footer {
+    text-align: center;
+    margin-top: 40px;
+    page-break-before: always;
+}
+
+.footer button {
+    font-size: var(--base-font-size);
+    padding: 10px 20px;
+}
+
+ul, ol {
+    margin-left: 40px;
+    padding-left: 0;
+}
+
+li {
+    margin-bottom: 10px;
+}
+
+.code-block {
+    background-color: #f4f4f4;
+    padding: 10px;
+    overflow-x: auto;
+    display: block;
+    border: 1px solid #ccc;
+    margin: 10px 0;
+    font-family: Consolas, monospace;
+}
+
+em {
+    font-style: italic;
+}
+
+strong {
+    font-weight: bold;
+}
+
+.font-selector {
+    margin: 20px;
+}
+
+.font-selector label {
+    margin-right: 10px;
+    font-weight: bold;
+}
+
+.font-selector select {
+    font-size: var(--base-font-size);
+    padding: 5px;
+}
+
+/* Hide elements with class 'no-print' when printing */
+@media print {
+    .no-print {
+        display: none;
+    }
+}
+
+/* Styles for multiple-choice options */
+.options-list {
+    list-style-type: lower-alpha;
+    margin-left: 40px;
+}
+
+.options-list li {
+    margin-bottom: 5px;
+}
+

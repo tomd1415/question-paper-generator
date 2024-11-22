@@ -1,0 +1,45 @@
+<html><head>
+    <title>Question Paper Generator</title>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+    <script src="script.js"></script>
+</head>
+<body class="font-size-default" onload="initializePage()">
+
+<div class="font-selector">
+    <label for="fontSizeSelector">Select Minimum Font Size:</label>
+    <select id="fontSizeSelector" onchange="changeFontSize()">
+        <option value="font-size-default">Default (12pt)</option>
+        <option value="font-size-18pt">18pt Minimum</option>
+        <option value="font-size-36pt">36pt Minimum</option>
+    </select>
+</div>
+
+<div class="header">
+    <h1 id="paperTitle">OCR GCSE Computing - Sample Questions</h1>
+</div>
+
+<div class="info">
+    <p><label>Pupil Name:</label> ____________________________</p>
+</div>
+
+<div class="controls">
+    <label for="titleInput"><strong>Enter Paper Title:</strong></label>
+    <input type="text" id="titleInput" placeholder="Enter title here" size="50">
+    <br><br>
+    <label for="fileInput"><strong>Upload Questions JSON File:</strong></label>
+    <input type="file" id="fileInput" accept=".json">
+    <br><br>
+    <button onclick="generatePaper()">Generate Paper</button>
+    <button onclick="savePaper()">Save Paper</button>
+</div>
+
+<div id="questionsContainer"><div class="question"><p><strong>1.</strong> What does CPU stand for? (1 mark)</p><div class="answer-space" data-marks="1" style="height: 40px;"></div></div><div class="question"><p><strong>2.</strong> Explain the purpose of RAM in a computer system. (2 marks)</p><div class="answer-space" data-marks="2" style="height: 80px;"></div></div><div class="question"><p><strong>3.</strong> Write a Python program that prints 'Hello, World!' to the screen. (2 marks)</p><div class="answer-space" data-marks="2" style="height: 80px;"></div></div><div class="question"><p><strong>4.</strong> Describe the difference between volatile and non-volatile memory. (2 marks)</p><div class="answer-space" data-marks="2" style="height: 80px;"></div></div><div class="question"><p><strong>5.</strong> Convert the binary number 1101 to decimal. (1 mark)</p><div class="answer-space" data-marks="1" style="height: 40px;"></div></div><div class="question"><p><strong>6.</strong> Explain what a syntax error is in programming. (1 mark)</p><div class="answer-space" data-marks="1" style="height: 40px;"></div></div><div class="question"><p><strong>7.</strong> Write a Python function called 'add' that takes two numbers and returns their sum. (3 marks)</p><div class="answer-space" data-marks="3" style="height: 120px;"></div></div><div class="question"><p><strong>8.</strong> What is an algorithm? (1 mark)</p><div class="answer-space" data-marks="1" style="height: 40px;"></div></div><div class="question"><p><strong>9.</strong> Explain the purpose of the operating system. (2 marks)</p><div class="answer-space" data-marks="2" style="height: 80px;"></div></div><div class="question"><p><strong>10.</strong> List two input devices and two output devices. (2 marks)</p><div class="answer-space" data-marks="2" style="height: 80px;"></div></div></div>
+
+<div class="footer">
+    <p><strong>End of Questions</strong></p>
+</div>
+
+
+
+
+</body></html>

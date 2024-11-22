@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Question Paper Generator</title>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+    <script src="script.js"></script>
+</head>
+<body class="font-size-default" onload="initializePage()">
+
+<div class="font-selector no-print">
+    <label for="fontSizeSelector">Select Minimum Font Size:</label>
+    <select id="fontSizeSelector" onchange="changeFontSize()">
+        <option value="font-size-default">Default (12pt)</option>
+        <option value="font-size-18pt">18pt Minimum</option>
+        <option value="font-size-36pt">36pt Minimum</option>
+    </select>
+</div>
+
+<div class="header">
+    <h1 id="paperTitle">Question Paper</h1>
+</div>
+
+<div class="controls no-print">
+    <label for="titleInput"><strong>Enter Paper Title:</strong></label>
+    <input type="text" id="titleInput" placeholder="Enter title here" size="50">
+    <br><br>
+    <label for="fileInput"><strong>Upload Questions JSON File:</strong></label>
+    <input type="file" id="fileInput" accept=".json">
+    <br><br>
+    <button onclick="generatePaper()">Generate Paper</button>
+    <button onclick="savePaper()">Save Paper</button>
+</div>
+
+<div id="questionsContainer"></div>
+
+<div class="footer">
+    <p><strong>End of Questions</strong></p>
+</div>
+
+</body>
+</html>
+
