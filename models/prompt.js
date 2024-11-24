@@ -29,6 +29,7 @@ module.exports = (sequelize, DataTypes) => {
     },
   }, {
     tableName: 'prompts',
+    timestamps: true,
   });
   return Prompt;
 };

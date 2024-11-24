@@ -14,6 +14,7 @@ module.exports = (sequelize, DataTypes) => {
     },
   }, {
     tableName: 'subjects',
+    timestamps: true,
   });
   return Subject;
 };
