@@ -1,67 +1,30 @@
+<!-- views/generatequestions.ejs -->
+
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Prompt Generator</title>
-    <link rel="stylesheet" type="text/css" href="generatequestions.css">
-    <script src="generatequestions.js"></script>
+    <title>Generate Questions</title>
+    <link rel="stylesheet" type="text/css" href="/css/generatequestions.css">
+    <script src="/js/generatequestions.js"></script>
 </head>
-<body onload="initializePage()">
+<body>
 
-    <div class="container">
-        <h1>AI Prompt Generator</h1>
-
-        <div class="form-section">
-            <label for="subjectInput"><strong>Subject:</strong></label>
-            <input type="text" id="subjectInput" placeholder="e.g., Mathematics" size="50">
-        </div>
-
-        <div class="form-section">
-            <label for="specificationInput"><strong>Specification/Curriculum Guidelines:</strong></label>
-            <input type="text" id="specificationInput" placeholder="e.g., Key Stage 3 National Curriculum" size="50">
-        </div>
-
-        <div class="form-section">
-            <label for="difficultyInput"><strong>Difficulty Level:</strong></label>
-            <input type="text" id="difficultyInput" placeholder="e.g., working well below age-related expectations" size="50">
-        </div>
-
-        <div class="form-section">
-            <label for="numQuestionsInput"><strong>Number of Questions:</strong></label>
-            <input type="number" id="numQuestionsInput" min="1" max="100" value="10">
-        </div>
-
-        <div class="form-section">
-            <label for="titleInput"><strong>Paper Title:</strong></label>
-            <input type="text" id="titleInput" placeholder="e.g., Basic Mathematics Questions" size="50">
-        </div>
-
-        <div class="form-section">
-            <label for="topicsInput"><strong>Topics to be Covered (Optional):</strong></label>
-            <textarea id="topicsInput" placeholder="Enter topics, one per line" rows="5" cols="80"></textarea>
-        </div>
-
-        <div class="form-section" id="topicFocusSection" style="display: none;">
-            <label for="topicFocusSelect"><strong>Question Focus:</strong></label>
-            <select id="topicFocusSelect">
-                <option value="only">Only topic related (default)</option>
-                <option value="mostly">Focused on topic but add a few other questions from related topics</option>
-            </select>
-        </div>
-
-        <div class="form-section">
-            <label for="exampleQuestionsInput"><strong>Example Questions (Optional):</strong></label>
-            <textarea id="exampleQuestionsInput" placeholder="Enter example questions, one per line" rows="5" cols="80"></textarea>
-        </div>
-
-        <div class="form-section">
-            <button onclick="generatePrompt()">Generate Prompt</button>
-        </div>
-
-        <div class="prompt-section">
-            <h2>Generated Prompt</h2>
-            <textarea id="promptOutput" rows="20" cols="100" readonly></textarea>
-        </div>
-    </div>
+<div class="container">
+    <h1>Generate Questions</h1>
+    <!-- Add your form and inputs for generating questions here -->
+    <form id="generateForm" method="post" action="/questions/generate">
+        <label for="promptInput">Enter Prompt:</label><br>
+        <textarea id="promptInput" name="prompt" rows="5" cols="80"></textarea><br><br>
+        <label for="subjectSelect">Select Subject:</label><br>
+        <select id="subjectSelect" name="subject">
+            <!-- Options populated from the database -->
+            <% subjects.forEach(function(subject) { %>
+                <option value="<%= subject.subject_id %>"><%= subject.subject_name %></option>
+            <% }); %>
+        </select><br><br>
+        <button type="submit">Generate Questions</button>
+    </form>
+</div>
 
 </body>
 </html>

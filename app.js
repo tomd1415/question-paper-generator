@@ -57,12 +57,13 @@ app.use('/questions', questionsRouter);
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
+app.use('/save', saveRouter);
+
 // Error handling middleware
 app.use(function (err, req, res, next) {
   console.error(err.stack);
   res.status(500).send('Something broke!');
 });
-app.use('/save', saveRouter);
 // Start the server
 const PORT = process.env.PORT || 3000;
 
