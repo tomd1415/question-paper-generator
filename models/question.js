@@ -1,52 +1,47 @@
-// models/question.js
+const { DataTypes } = require('sequelize');
 
-module.exports = (sequelize, DataTypes) => {
-  const Question = sequelize.define('Question', {
-    question_id: {
-      type: DataTypes.INTEGER,
-      primaryKey: true,
-      autoIncrement: true,
-    },
-    prompt_id: {
-      type: DataTypes.INTEGER,
-      references: {
-        model: 'prompts',
-        key: 'prompt_id',
-      },
-      allowNull: false,
-    },
-    question_text: {
-      type: DataTypes.TEXT,
-      allowNull: false,
-    },
-    marks: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-    },
-    code_snippet: {
-      type: DataTypes.TEXT,
-      allowNull: true,
-    },
-    options: {
-      type: DataTypes.JSONB, // PostgreSQL JSONB type
-      allowNull: true,
-    },
-    answer: {
-      type: DataTypes.TEXT,
-      allowNull: false,
-    },
-    question_type: {
-      type: DataTypes.ENUM('multiple-choice', 'short-answer', 'essay', 'code', 'numerical'),
-      allowNull: false,
-    },
-    image_url: {
-      type: DataTypes.STRING, // Field for image path or URL
-      allowNull: true,
-    },
-  }, {
-    tableName: 'questions',
-    timestamps: true,
-  });
-  return Question;
+module.exports = (sequelize) => {
+    const Question = sequelize.define('Question', {
+        id: {
+            type: DataTypes.INTEGER,
+            primaryKey: true,
+            autoIncrement: true,
+        },
+        text: {
+            type: DataTypes.TEXT,
+            allowNull: false,
+        },
+        marks: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+        },
+        correctAnswer: {
+            type: DataTypes.TEXT,
+            allowNull: true,
+        },
+        questionType: {
+            type: DataTypes.STRING,
+            defaultValue: 'text',
+        },
+        deletedAt: {
+            type: DataTypes.DATE,
+            allowNull: true,
+        },
+    }, {
+        timestamps: true,
+        paranoid: true,
+        tableName: 'questions',
+    });
+
+    Question.associate = (models) => {
+        Question.belongsToMany(models.Paper, {
+            through: models.PaperQuestion,
+            foreignKey: 'question_id',
+            as: 'papers',
+        });
+        Question.hasMany(models.QuestionOption, { foreignKey: 'question_id', as: 'options' });
+        Question.hasMany(models.PupilPaperAnswer, { foreignKey: 'question_id', as: 'pupilAnswers' });
+    };
+
+    return Question;
 };
-

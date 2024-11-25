@@ -1,36 +1,31 @@
-// models/prompt.js
+const { DataTypes } = require('sequelize');
 
-module.exports = (sequelize, DataTypes) => {
-  const Prompt = sequelize.define('Prompt', {
-    prompt_id: {
-      type: DataTypes.INTEGER,
-      primaryKey: true,
-      autoIncrement: true,
-    },
-    staff_user_id: {
-      type: DataTypes.INTEGER,
-      references: {
-        model: 'users',
-        key: 'user_id',
-      },
-      allowNull: false,
-    },
-    subject_id: {
-      type: DataTypes.INTEGER,
-      references: {
-        model: 'subjects',
-        key: 'subject_id',
-      },
-      allowNull: false,
-    },
-    prompt_text: {
-      type: DataTypes.TEXT,
-      allowNull: false,
-    },
-  }, {
-    tableName: 'prompts',
-    timestamps: true,
-  });
-  return Prompt;
+module.exports = (sequelize) => {
+    const Prompt = sequelize.define('Prompt', {
+        id: {
+            type: DataTypes.INTEGER,
+            primaryKey: true,
+            autoIncrement: true,
+        },
+        promptText: {
+            type: DataTypes.TEXT,
+            allowNull: false, // The text of the prompt used to generate questions
+        },
+        deletedAt: {
+            type: DataTypes.DATE,
+            allowNull: true,
+        },
+    }, {
+        timestamps: true,
+        paranoid: true,
+        tableName: 'prompts',
+    });
+
+    Prompt.associate = (models) => {
+        Prompt.belongsTo(models.Subject, { foreignKey: 'subject_id', as: 'subject' });
+        Prompt.belongsTo(models.User, { foreignKey: 'created_by', as: 'creator' });
+        Prompt.belongsTo(models.Paper, { foreignKey: 'paper_id', as: 'paper' });
+    };
+
+    return Prompt;
 };
-

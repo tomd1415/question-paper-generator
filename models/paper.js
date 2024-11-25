@@ -1,20 +1,15 @@
 const { DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
-    const Subject = sequelize.define('Subject', {
+    const Paper = sequelize.define('Paper', {
         id: {
             type: DataTypes.INTEGER,
             primaryKey: true,
             autoIncrement: true,
         },
-        name: {
+        title: {
             type: DataTypes.STRING,
             allowNull: false,
-            unique: true,
-        },
-        specifications: {
-            type: DataTypes.TEXT,
-            allowNull: true,
         },
         yearGroup: {
             type: DataTypes.STRING,
@@ -25,6 +20,10 @@ module.exports = (sequelize) => {
                         'Year 12', 'Year 13', 'Year 14']],
             },
         },
+        comments: {
+            type: DataTypes.TEXT,
+            allowNull: true,
+        },
         deletedAt: {
             type: DataTypes.DATE,
             allowNull: true,
@@ -32,20 +31,18 @@ module.exports = (sequelize) => {
     }, {
         timestamps: true,
         paranoid: true,
-        tableName: 'subjects',
+        tableName: 'papers',
     });
 
-    Subject.associate = (models) => {
-        Subject.belongsToMany(models.User, {
-            through: models.TeacherSubject,
-            foreignKey: 'subject_id',
-            as: 'teachers',
+    Paper.associate = (models) => {
+        Paper.belongsTo(models.Subject, { foreignKey: 'subject_id', as: 'subject' });
+        Paper.hasMany(models.Prompt, { foreignKey: 'paper_id', as: 'prompts' });
+        Paper.belongsToMany(models.Question, {
+            through: models.PaperQuestion,
+            foreignKey: 'paper_id',
+            as: 'questions',
         });
-        Subject.hasMany(models.Specification, { foreignKey: 'subject_id', as: 'specifications' });
-        Subject.hasMany(models.Topic, { foreignKey: 'subject_id', as: 'topics' });
-        Subject.hasMany(models.Prompt, { foreignKey: 'subject_id', as: 'prompts' });
-
     };
 
-    return Subject;
+    return Paper;
 };

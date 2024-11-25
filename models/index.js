@@ -1,54 +1,159 @@
-// models/index.js
+'use strict';
 
-const Sequelize = require('sequelize');
-const config = require('../config/config.js')['development'];
-
-const sequelize = new Sequelize(config.database, config.username, config.password, config);
-
+const fs = require('fs');
+const path = require('path');
+const { Sequelize, DataTypes } = require('sequelize');
+const basename = path.basename(__filename);
+const env = process.env.NODE_ENV || 'development';
+const config = require(__dirname + '/../config/config.js')[env];
 const db = {};
 
-// Import models
-db.User = require('./user')(sequelize, Sequelize.DataTypes);
-db.Subject = require('./subject')(sequelize, Sequelize.DataTypes);
-db.Specification = require('./specification')(sequelize, Sequelize.DataTypes);
-db.Topic = require('./topic')(sequelize, Sequelize.DataTypes);
-db.Prompt = require('./prompt')(sequelize, Sequelize.DataTypes);
-db.Question = require('./question')(sequelize, Sequelize.DataTypes);
-db.PupilAnswer = require('./pupilAnswer')(sequelize, Sequelize.DataTypes);
+let sequelize;
+if (config.use_env_variable) {
+    sequelize = new Sequelize(process.env[config.use_env_variable], config);
+} else {
+    sequelize = new Sequelize(config.database, config.username, config.password, config);
+}
+
+// Import all models
+db.User = require('./user')(sequelize, DataTypes);
+db.Subject = require('./subject')(sequelize, DataTypes);
+db.TeacherSubject = require('./teacherSubject')(sequelize, DataTypes);
+db.Paper = require('./paper')(sequelize, DataTypes);
+db.Question = require('./question')(sequelize, DataTypes);
+db.QuestionOption = require('./questionOption')(sequelize, DataTypes);
+db.PaperQuestion = require('./paperQuestion')(sequelize, DataTypes);
+db.PupilPaperAnswer = require('./pupilPaperAnswer')(sequelize, DataTypes);
+db.Specification = require('./specification')(sequelize, DataTypes);
+db.Topic = require('./topic')(sequelize, DataTypes);
+db.Prompt = require('./prompt')(sequelize, DataTypes);
 
 // Define associations
 
-// User
-db.User.hasMany(db.Prompt, { foreignKey: 'staff_user_id' });
-db.User.hasMany(db.PupilAnswer, { foreignKey: 'pupil_user_id' });
+// Users
+db.User.belongsToMany(db.Subject, {
+    through: db.TeacherSubject,
+    foreignKey: 'teacher_id',
+    as: 'subjects',
+});
+db.User.hasMany(db.Specification, {
+    foreignKey: 'created_by',
+    as: 'createdSpecifications',
+});
+db.User.hasMany(db.Topic, {
+    foreignKey: 'created_by',
+    as: 'createdTopics',
+});
+db.User.hasMany(db.Prompt, {
+    foreignKey: 'created_by',
+    as: 'createdPrompts',
+});
 
-// Subject
-db.Subject.hasMany(db.Specification, { foreignKey: 'subject_id' });
-db.Subject.hasMany(db.Prompt, { foreignKey: 'subject_id' });
+// Subjects
+db.Subject.belongsToMany(db.User, {
+    through: db.TeacherSubject,
+    foreignKey: 'subject_id',
+    as: 'teachers',
+});
+db.Subject.hasMany(db.Specification, {
+    foreignKey: 'subject_id',
+    as: 'specsubjectSpec',
+});
+db.Subject.hasMany(db.Topic, {
+    foreignKey: 'subject_id',
+    as: 'topics',
+});
+db.Subject.hasMany(db.Prompt, {
+    foreignKey: 'subject_id',
+    as: 'prompts',
+});
 
-// Specification
-db.Specification.belongsTo(db.Subject, { foreignKey: 'subject_id' });
-db.Specification.hasMany(db.Topic, { foreignKey: 'specification_id' });
+// Papers
+db.Paper.belongsTo(db.Subject, {
+    foreignKey: 'subject_id',
+    as: 'subject',
+});
+db.Paper.belongsToMany(db.Question, {
+    through: db.PaperQuestion,
+    foreignKey: 'paper_id',
+    as: 'questions',
+});
+db.Paper.hasMany(db.Prompt, {
+    foreignKey: 'paper_id',
+    as: 'prompts',
+});
 
-// Topic
-db.Topic.belongsTo(db.Specification, { foreignKey: 'specification_id' });
+// Questions
+db.Question.belongsToMany(db.Paper, {
+    through: db.PaperQuestion,
+    foreignKey: 'question_id',
+    as: 'papers',
+});
+db.Question.hasMany(db.QuestionOption, {
+    foreignKey: 'question_id',
+    as: 'options',
+});
+db.Question.hasMany(db.PupilPaperAnswer, {
+    foreignKey: 'question_id',
+    as: 'pupilAnswers',
+});
 
-// Prompt
-db.Prompt.belongsTo(db.User, { foreignKey: 'staff_user_id' });
-db.Prompt.belongsTo(db.Subject, { foreignKey: 'subject_id' });
-db.Prompt.hasMany(db.Question, { foreignKey: 'prompt_id' });
+// Question Options
+db.QuestionOption.belongsTo(db.Question, {
+    foreignKey: 'question_id',
+    as: 'question',
+});
 
-// Question
-db.Question.belongsTo(db.Prompt, { foreignKey: 'prompt_id' });
-db.Question.hasMany(db.PupilAnswer, { foreignKey: 'question_id' });
+// Pupil Paper Answers
+db.PupilPaperAnswer.belongsTo(db.Paper, {
+    foreignKey: 'paper_id',
+    as: 'paper',
+});
+db.PupilPaperAnswer.belongsTo(db.Question, {
+    foreignKey: 'question_id',
+    as: 'question',
+});
+db.PupilPaperAnswer.belongsTo(db.User, {
+    foreignKey: 'pupil_id',
+    as: 'pupil',
+});
 
-// PupilAnswer
-db.PupilAnswer.belongsTo(db.Question, { foreignKey: 'question_id' });
-db.PupilAnswer.belongsTo(db.User, { foreignKey: 'pupil_user_id' });
+// Specifications
+db.Specification.belongsTo(db.Subject, {
+    foreignKey: 'subject_id',
+    as: 'subject',
+});
+db.Specification.belongsTo(db.User, {
+    foreignKey: 'created_by',
+    as: 'creator',
+});
 
-// Export db object
+// Topics
+db.Topic.belongsTo(db.Subject, {
+    foreignKey: 'subject_id',
+    as: 'subject',
+});
+db.Topic.belongsTo(db.User, {
+    foreignKey: 'created_by',
+    as: 'creator',
+});
+
+// Prompts
+db.Prompt.belongsTo(db.Subject, {
+    foreignKey: 'subject_id',
+    as: 'subject',
+});
+db.Prompt.belongsTo(db.User, {
+    foreignKey: 'created_by',
+    as: 'creator',
+});
+db.Prompt.belongsTo(db.Paper, {
+    foreignKey: 'paper_id',
+    as: 'paper',
+});
+
+// Sequelize initialization
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
 module.exports = db;
-
