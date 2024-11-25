@@ -1,49 +1,82 @@
+// models/user.js
+
 const { DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
-    const User = sequelize.define('User', {
-        id: {
-            type: DataTypes.INTEGER,
-            primaryKey: true,
-            autoIncrement: true,
-        },
-        username: {
-            type: DataTypes.STRING,
-            allowNull: false,
-            unique: true,
-        },
-        password: {
-            type: DataTypes.STRING,
-            allowNull: false,
-        },
-        role: {
-            type: DataTypes.STRING,
-            allowNull: false,
-            validate: {
-                isIn: [['teacher', 'pupil', 'admin']],
-            },
-        },
-        deletedAt: {
-            type: DataTypes.DATE,
-            allowNull: true,
-        },
-    }, {
-        timestamps: true,
-        paranoid: true,
-        tableName: 'users',
+  const User = sequelize.define('User', {
+    id: { // Primary key
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
+    username: { // User's unique username
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: true,
+    },
+    password: { // Hashed password
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    role: { // Role of the user: 'teacher', 'pupil', 'admin'
+      type: DataTypes.ENUM('teacher', 'pupil', 'admin'),
+      allowNull: false,
+    },
+    deletedAt: { // Soft delete timestamp
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
+  }, {
+    timestamps: true,
+    paranoid: true, // Enables soft delete
+    tableName: 'users',
+  });
+
+  User.associate = (models) => {
+    // User <-> Subject (Many-to-Many)
+    User.belongsToMany(models.Subject, {
+      through: models.TeacherSubject,
+      foreignKey: 'userId',
+      otherKey: 'subjectId',
+      as: 'subjects',
     });
 
-    User.associate = (models) => {
-        User.belongsToMany(models.Subject, {
-            through: models.TeacherSubject,
-            foreignKey: 'teacher_id',
-            as: 'subjects',
-        });
-        User.hasMany(models.Specification, { foreignKey: 'created_by', as: 'createdSpecifications' });
-        User.hasMany(models.Topic, { foreignKey: 'created_by', as: 'createdTopics' });
-        User.hasMany(models.Prompt, { foreignKey: 'created_by', as: 'createdPrompts' });
+    // User -> Specification (One-to-Many)
+    User.hasMany(models.Specification, {
+      foreignKey: 'createdBy',
+      as: 'createdSpecifications',
+    });
 
-    };
+    // User -> Topic (One-to-Many)
+    User.hasMany(models.Topic, {
+      foreignKey: 'createdBy',
+      as: 'createdTopics',
+    });
 
-    return User;
+    // User -> Prompt (One-to-Many)
+    User.hasMany(models.Prompt, {
+      foreignKey: 'createdBy',
+      as: 'createdPrompts',
+    });
+
+    // User -> Paper (One-to-Many)
+    User.hasMany(models.Paper, {
+      foreignKey: 'staffUserId',
+      as: 'papers',
+    });
+
+    // User -> Question (One-to-Many)
+    User.hasMany(models.Question, {
+      foreignKey: 'staffUserId',
+      as: 'questions',
+    });
+
+    // User -> PupilAnswer (One-to-Many)
+    User.hasMany(models.PupilAnswer, {
+      foreignKey: 'pupilUserId',
+      as: 'pupilAnswers',
+    });
+  };
+
+  return User;
 };

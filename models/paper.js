@@ -1,48 +1,94 @@
+// models/paper.js
+
 const { DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
-    const Paper = sequelize.define('Paper', {
-        id: {
-            type: DataTypes.INTEGER,
-            primaryKey: true,
-            autoIncrement: true,
-        },
-        title: {
-            type: DataTypes.STRING,
-            allowNull: false,
-        },
-        yearGroup: {
-            type: DataTypes.STRING,
-            allowNull: false,
-            validate: {
-                isIn: [['Year 1', 'Year 2', 'Year 3', 'Year 4', 'Year 5', 'Year 6',
-                        'Year 7', 'Year 8', 'Year 9', 'Year 10', 'Year 11',
-                        'Year 12', 'Year 13', 'Year 14']],
-            },
-        },
-        comments: {
-            type: DataTypes.TEXT,
-            allowNull: true,
-        },
-        deletedAt: {
-            type: DataTypes.DATE,
-            allowNull: true,
-        },
-    }, {
-        timestamps: true,
-        paranoid: true,
-        tableName: 'papers',
+  const Paper = sequelize.define('Paper', {
+    id: { // Primary key
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
+    staffUserId: { // Foreign key to User (creator)
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'users',
+        key: 'id',
+      },
+    },
+    title: { // Paper title
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    subjectId: { // Foreign key to Subject
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'subjects',
+        key: 'id',
+      },
+    },
+    specificationId: { // Foreign key to Specification
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: {
+        model: 'specifications',
+        key: 'id',
+      },
+    },
+    topics: { // Array of topic IDs
+      type: DataTypes.ARRAY(DataTypes.INTEGER),
+      allowNull: true,
+    },
+    deletedAt: { // Soft delete timestamp
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
+  }, {
+    timestamps: true, // Adds createdAt and updatedAt
+    paranoid: true, // Enables soft delete
+    tableName: 'papers',
+  });
+
+  Paper.associate = (models) => {
+    // Paper -> User (Many-to-One)
+    Paper.belongsTo(models.User, {
+      foreignKey: 'staffUserId',
+      as: 'creator',
     });
 
-    Paper.associate = (models) => {
-        Paper.belongsTo(models.Subject, { foreignKey: 'subject_id', as: 'subject' });
-        Paper.hasMany(models.Prompt, { foreignKey: 'paper_id', as: 'prompts' });
-        Paper.belongsToMany(models.Question, {
-            through: models.PaperQuestion,
-            foreignKey: 'paper_id',
-            as: 'questions',
-        });
-    };
+    // Paper -> Subject (Many-to-One)
+    Paper.belongsTo(models.Subject, {
+      foreignKey: 'subjectId',
+      as: 'subject',
+    });
 
-    return Paper;
+    // Paper -> Specification (Many-to-One)
+    Paper.belongsTo(models.Specification, {
+      foreignKey: 'specificationId',
+      as: 'specification',
+    });
+
+    // Paper -> Question (One-to-Many)
+    Paper.hasMany(models.Question, {
+      foreignKey: 'paperId',
+      as: 'questions',
+      onDelete: 'CASCADE',
+    });
+
+    // Paper -> Prompt (One-to-Many)
+    Paper.hasMany(models.Prompt, {
+      foreignKey: 'paperId',
+      as: 'prompts',
+    });
+
+    // Paper -> PupilAnswer (One-to-Many)
+    Paper.hasMany(models.PupilAnswer, {
+      foreignKey: 'paperId',
+      as: 'pupilAnswers',
+    });
+  };
+
+  return Paper;
 };
