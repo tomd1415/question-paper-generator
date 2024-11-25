@@ -14,7 +14,7 @@ module.exports = (sequelize) => {
       allowNull: false,
       unique: true,
     },
-    specifications: { // Specifications details
+    specificationDetails: { // Renamed to avoid conflict
       type: DataTypes.TEXT,
       allowNull: true,
     },
