@@ -1,0 +1,158 @@
+<!-- views/editpaper.ejs -->
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Paper</title>
+    <!-- Link to General Styles (if any) -->
+    <link rel="stylesheet" type="text/css" href="/css/styles.css">
+    <!-- Link to Edit Paper Specific Styles -->
+    <link rel="stylesheet" type="text/css" href="/css/editpaper.css">
+    <!-- Optional: External Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Times+New+Roman&display=swap" rel="stylesheet">
+    <!-- Optional: Add Print Styles for Exam Paper Look -->
+    <link rel="stylesheet" type="text/css" href="/css/paper.css">
+    <script src="/js/editpaper.js" defer></script> <!-- External JS for Enhanced Functionality -->
+</head>
+<body>
+    <div class="container">
+        <h1>Edit Paper</h1>
+        <form id="editPaperForm" method="post" action="/papers/<%= paper.id %>/edit">
+            <!-- Paper Title -->
+            <div class="form-section">
+                <label for="title">Paper Title:</label>
+                <input type="text" id="title" name="title" value="<%= paper.title %>" required>
+            </div>
+
+            <h2>Questions</h2>
+            <div id="questionsContainer">
+                <% paper.questions.forEach(function(question, index) { %>
+                    <div class="question-block">
+                        <h3>Question <%= question.questionNumber %></h3>
+                        <!-- Hidden Field for Question ID -->
+                        <input type="hidden" name="questions[<%= index %>][id]" value="<%= question.id %>">
+
+                        <!-- Question Text -->
+                        <div class="form-group">
+                            <label for="questions[<%= index %>][questionText]">Question Text:</label>
+                            <textarea name="questions[<%= index %>][questionText]" rows="3" required><%= question.questionText %></textarea>
+                        </div>
+
+                        <!-- Marks -->
+                        <div class="form-group">
+                            <label for="questions[<%= index %>][marks]">Marks:</label>
+                            <input type="number" name="questions[<%= index %>][marks]" value="<%= question.marks %>" min="1" required>
+                        </div>
+
+                        <!-- Code Snippet -->
+                        <div class="form-group">
+                            <label for="questions[<%= index %>][codeSnippet]">Code Snippet:</label>
+                            <textarea name="questions[<%= index %>][codeSnippet]" rows="3"><%= question.codeSnippet %></textarea>
+                        </div>
+
+                        <!-- Options (Multiple Choice) -->
+                        <div class="form-group">
+                            <label for="questions[<%= index %>][options]">Options (for Multiple Choice, one per line):</label>
+                            <textarea name="questions[<%= index %>][options]" rows="3"><%= question.options ? question.options.join('\n') : '' %></textarea>
+                        </div>
+
+                        <!-- Answer -->
+                        <div class="form-group">
+                            <label for="questions[<%= index %>][answer]">Answer:</label>
+                            <textarea name="questions[<%= index %>][answer]" rows="2"><%= question.answer %></textarea>
+                        </div>
+
+                        <!-- Remove Question Button -->
+                        <button type="button" class="remove-question-btn" onclick="removeQuestion(this)">Remove Question</button>
+                        <hr>
+                    </div>
+                <% }); %>
+            </div>
+
+            <!-- Add New Question Button -->
+            <button type="button" id="addQuestionBtn" onclick="addQuestion()">Add Question</button>
+            <br><br>
+
+            <!-- Submit Button -->
+            <button type="submit">Save Changes</button>
+        </form>
+    </div>
+
+    <!-- External JavaScript for Dynamic Functionality -->
+    <script>
+        // Function to add a new question block
+        function addQuestion() {
+            const questionsContainer = document.getElementById('questionsContainer');
+            const index = questionsContainer.children.length;
+
+            const questionBlock = document.createElement('div');
+            questionBlock.className = 'question-block';
+
+            questionBlock.innerHTML = `
+                <h3>Question ${index + 1}</h3>
+                <!-- Hidden Field for Question ID -->
+                <input type="hidden" name="questions[${index}][id]" value="">
+
+                <!-- Question Text -->
+                <div class="form-group">
+                    <label for="questions[${index}][questionText]">Question Text:</label>
+                    <textarea name="questions[${index}][questionText]" rows="3" required></textarea>
+                </div>
+
+                <!-- Marks -->
+                <div class="form-group">
+                    <label for="questions[${index}][marks]">Marks:</label>
+                    <input type="number" name="questions[${index}][marks]" value="1" min="1" required>
+                </div>
+
+                <!-- Code Snippet -->
+                <div class="form-group">
+                    <label for="questions[${index}][codeSnippet]">Code Snippet:</label>
+                    <textarea name="questions[${index}][codeSnippet]" rows="3"></textarea>
+                </div>
+
+                <!-- Options (Multiple Choice) -->
+                <div class="form-group">
+                    <label for="questions[${index}][options]">Options (for Multiple Choice, one per line):</label>
+                    <textarea name="questions[${index}][options]" rows="3"></textarea>
+                </div>
+
+                <!-- Answer -->
+                <div class="form-group">
+                    <label for="questions[${index}][answer]">Answer:</label>
+                    <textarea name="questions[${index}][answer]" rows="2"></textarea>
+                </div>
+
+                <!-- Remove Question Button -->
+                <button type="button" class="remove-question-btn" onclick="removeQuestion(this)">Remove Question</button>
+                <hr>
+            `;
+
+            questionsContainer.appendChild(questionBlock);
+        }
+
+        // Function to remove a question block and re-number remaining questions
+        function removeQuestion(button) {
+            const questionBlock = button.parentElement;
+            questionBlock.remove();
+
+            // Re-number remaining questions
+            const questionsContainer = document.getElementById('questionsContainer');
+            const questionBlocks = questionsContainer.getElementsByClassName('question-block');
+
+            Array.from(questionBlocks).forEach((block, index) => {
+                block.querySelector('h3').textContent = `Question ${index + 1}`;
+                // Update name attributes accordingly
+                const inputs = block.querySelectorAll('input, textarea');
+                inputs.forEach(input => {
+                    const name = input.getAttribute('name');
+                    if (name) {
+                        const updatedName = name.replace(/questions\[\d+\]/, `questions[${index}]`);
+                        input.setAttribute('name', updatedName);
+                    }
+                });
+            });
+        }
+    </script>
+</body>
+</html>

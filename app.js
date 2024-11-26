@@ -7,6 +7,7 @@ const SequelizeStore = require('connect-session-sequelize')(session.Store);
 const dotenv = require('dotenv');
 const flash = require('connect-flash');
 const app = express();
+const bodyParser = require('body-parser'); // If not already included
 
 // Load environment variables
 dotenv.config();
@@ -65,6 +66,7 @@ const usersRouter = require('./routes/users'); // Import usersRouter
 const indexRouter = require('./routes/index');
 const questionsRouter = require('./routes/questions');
 const saveRouter = require('./routes/save');
+const papersRouter = require('./routes/papers');
 
 // Register Routes After Middleware
 app.use('/', indexRouter);
@@ -72,6 +74,8 @@ app.use('/users', usersRouter); // Register usersRouter
 app.use('/questions', questionsRouter);
 app.use('/admin', adminRouter);
 app.use('/save', saveRouter);
+app.use('/papers', papersRouter);
+
 
 // Error handling middleware
 app.use(function (err, req, res, next) {

@@ -51,9 +51,13 @@ module.exports = (sequelize) => {
     tableName: 'papers',
   });
 
-  Paper.associate = function(models) {
-    Paper.hasMany(models.Question, { foreignKey: 'paperId', as: 'questions' });
-    // ... other associations
+  // Associate Paper with Questions
+  Paper.associate = (models) => {
+    Paper.hasMany(models.Question, {
+      foreignKey: 'paperId',
+      as: 'questions',
+      onDelete: 'CASCADE',
+    });
   };
 
   return Paper;

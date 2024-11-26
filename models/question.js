@@ -75,6 +75,7 @@ module.exports = (sequelize) => {
     Question.belongsTo(models.Paper, {
       foreignKey: 'paperId',
       as: 'paper',
+      onDelete: 'CASCADE',
     });
 
     // Question -> User (Many-to-One)

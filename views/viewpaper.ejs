@@ -4,9 +4,17 @@
 <html>
 <head>
   <title><%= paper.title %></title>
+  <link rel="stylesheet" type="text/css" href="/css/paper.css">
 </head>
 <body>
-  <h1><%= paper.title %></h1>
+  <div class="header">
+    <h1><%= paper.title %></h1>
+  </div>
+
+  <div class="info">
+    <p><strong>Subject:</strong> <%= paper.subject.name %></p>
+    <p><strong>Date:</strong> <%= paper.date ? paper.date.toDateString() : 'N/A' %></p>
+  </div>
 
   <% paper.questions.forEach(function(question) { %>
     <div class="question">
@@ -25,5 +33,8 @@
     </div>
   <% }); %>
 
+  <div class="footer">
+    <p>End of Paper</p>
+  </div>
 </body>
 </html>
