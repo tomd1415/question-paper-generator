@@ -11,6 +11,13 @@ router.get('/generate', authenticationMiddleware, questionController.getGenerate
 // POST generate questions
 router.post('/generate', authenticationMiddleware, questionController.generateQuestions);
 
+// GET request to display the generate questions page
+router.get('/generate', questionController.getGenerateQuestionsPage);
+
+// POST request to handle question generation
+router.post('/generate', questionController.generateQuestions);
+
+
 // Other routes for questions
 
 module.exports = router;

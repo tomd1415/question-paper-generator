@@ -1,0 +1,81 @@
+<!-- views/addUser.ejs -->
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Add User</title>
+  <link rel="stylesheet" type="text/css" href="/css/style.css"> <!-- Optional CSS -->
+  <style>
+    .success {
+      color: green;
+      margin-bottom: 15px;
+    }
+    .error {
+      color: red;
+      margin-bottom: 15px;
+    }
+    .form-group {
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Add New User</h1>
+    
+    <% if (success) { %>
+        <div class="success"><%= success %></div>
+      <% } %>
+      
+      <% if (error) { %>
+        <div class="error"><%= error %></div>
+      <% } %>
+    
+    <form id="addUserForm" action="/admin/add-user" method="POST" onsubmit="return validateForm()">
+      <div class="form-group">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required>
+      </div>
+      
+      <div class="form-group">
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required>
+      </div>
+      
+      <div class="form-group">
+        <label for="confirmPassword">Confirm Password:</label>
+        <input type="password" id="confirmPassword" name="confirmPassword" required>
+      </div>
+      
+      <div class="form-group">
+        <label for="role">Role:</label>
+        <select id="role" name="role" required>
+          <option value="admin">Admin</option>
+          <option value="staff">Staff</option>
+          <option value="pupil">Pupil</option>
+        </select>
+      </div>
+      
+      <button type="submit">Add User</button>
+    </form>
+  </div>
+
+  <script>
+    function validateForm() {
+      const password = document.getElementById('password').value;
+      const confirmPassword = document.getElementById('confirmPassword').value;
+      if (password !== confirmPassword) {
+        alert('Passwords do not match.');
+        return false;
+      }
+      return true;
+    }
+
+    window.onload = function() {
+      <% if (success) { %>
+        document.getElementById('addUserForm').reset();
+      <% } %>
+    };
+  </script>
+</body>
+</html>

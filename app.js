@@ -5,8 +5,9 @@ const path = require('path');
 const session = require('express-session');
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
 const dotenv = require('dotenv');
+const flash = require('connect-flash');
 const app = express();
-
+const adminRouter = require('./routes/admin');
 
 // Load environment variables
 dotenv.config();
@@ -18,9 +19,9 @@ app.set('view engine', 'ejs'); // Assuming you are using EJS templates
 // Serve static files from 'public' directory
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Parse incoming requests
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+// **Move Body-Parsing Middleware Here**
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
 // Initialize database
 const db = require('./models');
@@ -45,7 +46,16 @@ app.use(
 
 sessionStore.sync();
 
-// Include routes
+app.use(flash());
+
+// Make flash messages available in all views
+app.use((req, res, next) => {
+  res.locals.success = req.flash('success');
+  res.locals.error = req.flash('error');
+  next();
+});
+
+// **Register Routes After Middleware**
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 const questionsRouter = require('./routes/questions');
@@ -54,9 +64,7 @@ const saveRouter = require('./routes/save');
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/questions', questionsRouter);
-app.use(express.json({ limit: '50mb' }));
-app.use(express.urlencoded({ extended: true, limit: '50mb' }));
-
+app.use('/admin', adminRouter); // Ensure admin routes are registered here
 app.use('/save', saveRouter);
 
 // Error handling middleware
@@ -64,6 +72,7 @@ app.use(function (err, req, res, next) {
   console.error(err.stack);
   res.status(500).send('Something broke!');
 });
+
 // Start the server
 const PORT = process.env.PORT || 3000;
 
