@@ -2,8 +2,10 @@
 
 'use strict';
 
+const fs = require('fs');
 const path = require('path');
 const { Sequelize, DataTypes } = require('sequelize');
+const basename = path.basename(__filename);
 const env = process.env.NODE_ENV || 'development';
 const config = require('../config/config.js')[env];
 const db = {};
@@ -20,26 +22,27 @@ if (config.use_env_variable) {
   );
 }
 
-// Import all models
-db.User = require('./user')(sequelize);
-db.Subject = require('./subject')(sequelize);
-db.TeacherSubject = require('./teacherSubject')(sequelize);
-db.Specification = require('./specification')(sequelize);
-db.Topic = require('./topic')(sequelize);
-db.Prompt = require('./prompt')(sequelize);
-db.Paper = require('./paper')(sequelize);
-db.Question = require('./question')(sequelize);
-db.PupilAnswer = require('./pupilAnswer')(sequelize);
+// Dynamically import all models in the models directory
+fs
+  .readdirSync(__dirname)
+  .filter(file => {
+    return (
+      file.indexOf('.') !== 0 &&
+      file !== basename &&
+      file.slice(-3) === '.js'
+    );
+  })
+  .forEach(file => {
+    const model = require(path.join(__dirname, file))(sequelize, Sequelize.DataTypes);
+    db[model.name] = model;
+  });
 
-// Associations
-db.User.associate(db);
-db.Subject.associate(db);
-db.Specification.associate(db);
-db.Topic.associate(db);
-db.Prompt.associate(db);
-db.Paper.associate(db);
-db.Question.associate(db);
-db.PupilAnswer.associate(db);
+// Establish associations
+Object.keys(db).forEach(modelName => {
+  if (db[modelName].associate) {
+    db[modelName].associate(db);
+  }
+});
 
 // Sequelize initialization
 db.sequelize = sequelize;

@@ -28,6 +28,8 @@ module.exports = (sequelize) => {
         model: 'subjects',
         key: 'id',
       },
+      onUpdate: 'CASCADE',
+      onDelete: 'SET NULL',
     },
     specificationId: { // Foreign key to Specification
       type: DataTypes.INTEGER,
@@ -58,6 +60,12 @@ module.exports = (sequelize) => {
       as: 'questions',
       onDelete: 'CASCADE',
     });
+    // **New Association**
+    Paper.belongsTo(models.Subject, {
+      foreignKey: 'subjectId',
+      as: 'subject', // Alias must match the one used in the controller
+    });
+
   };
 
   return Paper;

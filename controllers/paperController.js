@@ -1,10 +1,11 @@
 // controllers/paperController.js
 const db = require('../models'); // Adjust the path if necessary
+
 exports.viewPaper = async (req, res) => {
   try {
     const { paperId } = req.params;
 
-    // Fetch the paper and associated questions
+    // Fetch the paper, associated questions, and subject
     const paper = await db.Paper.findOne({
       where: { id: paperId },
       include: [
@@ -12,6 +13,13 @@ exports.viewPaper = async (req, res) => {
           model: db.Question,
           as: 'questions',
         },
+        {
+          model: db.Subject,
+          as: 'subject', // Ensure the alias matches your association
+        },
+      ],
+      order: [
+        [{ model: db.Question, as: 'questions' }, 'questionNumber', 'ASC'],
       ],
     });
 
