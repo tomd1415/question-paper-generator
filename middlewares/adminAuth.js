@@ -1,14 +1,22 @@
 // middlewares/adminAuth.js
 
-module.exports = function(req, res, next) {
-  //console.log('User Session:', req.session.user); // Add this line
+const db = require('../models');
 
-  if (req.path.startsWith('/admin')) {
+module.exports = async function adminAuth(req, res, next) {
+  if (req.session && req.session.userId) {
+    try {
+      const user = await db.User.findByPk(req.session.userId);
+      if (user && ['admin', 'teacher'].includes(user.role)) {
+        req.user = user; // Attach user to request
         return next();
-  }
-  if (req.session && req.session.user && req.session.user.role === 'admin') {
-    return next();
+      } else {
+        return res.status(403).send('Forbidden: Insufficient permissions.');
+      }
+    } catch (err) {
+      console.error('Error in adminAuth middleware:', err);
+      return res.status(500).send('Server error during authentication.');
+    }
   } else {
-    res.redirect('/users/login'); // Redirect to login or show an error
+    return res.status(401).send('Unauthorized: No active session.');
   }
 };

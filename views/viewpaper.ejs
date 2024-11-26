@@ -1,0 +1,29 @@
+<!-- views/viewpaper.ejs -->
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title><%= paper.title %></title>
+</head>
+<body>
+  <h1><%= paper.title %></h1>
+
+  <% paper.questions.forEach(function(question) { %>
+    <div class="question">
+      <h3>Question <%= question.questionNumber %> (<%= question.marks %> marks)</h3>
+      <p><%= question.questionText %></p>
+      <% if (question.codeSnippet) { %>
+        <pre><code><%= question.codeSnippet %></code></pre>
+      <% } %>
+      <% if (question.options && question.options.length > 0) { %>
+        <ul>
+          <% question.options.forEach(function(option) { %>
+            <li><%= option %></li>
+          <% }); %>
+        </ul>
+      <% } %>
+    </div>
+  <% }); %>
+
+</body>
+</html>

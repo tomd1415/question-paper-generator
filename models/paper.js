@@ -51,43 +51,9 @@ module.exports = (sequelize) => {
     tableName: 'papers',
   });
 
-  Paper.associate = (models) => {
-    // Paper -> User (Many-to-One)
-    Paper.belongsTo(models.User, {
-      foreignKey: 'staffUserId',
-      as: 'creator',
-    });
-
-    // Paper -> Subject (Many-to-One)
-    Paper.belongsTo(models.Subject, {
-      foreignKey: 'subjectId',
-      as: 'subject',
-    });
-
-    // Paper -> Specification (Many-to-One)
-    Paper.belongsTo(models.Specification, {
-      foreignKey: 'specificationId',
-      as: 'specification',
-    });
-
-    // Paper -> Question (One-to-Many)
-    Paper.hasMany(models.Question, {
-      foreignKey: 'paperId',
-      as: 'questions',
-      onDelete: 'CASCADE',
-    });
-
-    // Paper -> Prompt (One-to-Many)
-    Paper.hasMany(models.Prompt, {
-      foreignKey: 'paperId',
-      as: 'prompts',
-    });
-
-    // Paper -> PupilAnswer (One-to-Many)
-    Paper.hasMany(models.PupilAnswer, {
-      foreignKey: 'paperId',
-      as: 'pupilAnswers',
-    });
+  Paper.associate = function(models) {
+    Paper.hasMany(models.Question, { foreignKey: 'paperId', as: 'questions' });
+    // ... other associations
   };
 
   return Paper;

@@ -42,7 +42,7 @@ module.exports = (sequelize) => {
       allowNull: true,
     },
     options: { // JSON field for options (if multiple-choice)
-      type: DataTypes.JSONB,
+      type: DataTypes.ARRAY(DataTypes.STRING),
       allowNull: true,
     },
     answer: { // Correct answer
@@ -50,8 +50,11 @@ module.exports = (sequelize) => {
       allowNull: false,
     },
     questionType: { // Type of question
-      type: DataTypes.ENUM('multiple-choice', 'short-answer', 'essay', 'code', 'numerical'),
+      type: DataTypes.STRING,
       allowNull: false,
+      validate: {
+        isIn: [['multiple-choice', 'short-answer', 'essay']],
+      },
     },
     imageUrl: { // Optional image URL
       type: DataTypes.STRING,

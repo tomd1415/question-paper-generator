@@ -35,7 +35,12 @@ const sessionStore = new SequelizeStore({
 app.use(
   session({
     secret: process.env.SESSION_SECRET || 'your_secret_key',
-    store: sessionStore,
+    store: new SequelizeStore({
+      db: db.sequelize,
+      tableName: 'Sessions', // Optional, defaults to 'Sessions'
+      // Check out the documentation for additional options:
+      // https://github.com/mweibel/connect-session-sequelize#options
+    }),
     resave: false,
     saveUninitialized: false,
     cookie: {
@@ -46,12 +51,14 @@ app.use(
   })
 );
 
-sessionStore.sync();
+//sessionStore.sync();
+db.sequelize.sync(); // Ensure the session table is created
 
 app.use(flash());
 
 // Make flash messages available in all views
 app.use((req, res, next) => {
+  res.locals.currentUser = req.user;
   res.locals.success = req.flash('success');
   res.locals.error = req.flash('error');
   next();

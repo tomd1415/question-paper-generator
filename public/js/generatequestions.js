@@ -118,11 +118,16 @@ function generatePrompt() {
         prompt += `
 - **Example Questions:**
   - No example questions provided.
+
+ **VERY IMPORTANT!** Ensure that the returned data is fully formed JSON with no errors. Only correct, error-free JSON should be returned, nothing else.
 `;
     }
 
     // Output the generated prompt to the page
-    document.getElementById('promptOutput').value = prompt;
+    document.getElementById('promptInput').value = prompt;
+
+    // Set the prompt into the hidden input field
+    //document.getElementById('promptInput').value = prompt;
 }
 
 // Initialize the page (if needed)

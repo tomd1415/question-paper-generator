@@ -68,13 +68,16 @@
         </div>
 
         <div class="form-section">
-            <label for="promptOutput">Generated Prompt:</label>
-            <textarea id="promptOutput" name="prompt" rows="10" readonly></textarea>
+            <label for="promptInput">Generated Prompt:</label>
+            <textarea id="promptInput" name="prompt" rows="10" readonly></textarea>
         </div>
 
         <div class="form-section">
             <button type="submit">Submit to Generate Questions</button>
         </div>
+
+        <!-- Add this hidden input inside your form -->
+        <!--<input type="hidden" id="promptInput" name="prompt"> -->
     </form>
 </div>
 
