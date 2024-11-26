@@ -3,10 +3,10 @@
 const db = require('../models');
 
 module.exports = async function adminAuth(req, res, next) {
-  if (req.session && req.session.userId) {
+  if (req.session && req.session.user && req.session.user.id) {
     try {
-      const user = await db.User.findByPk(req.session.userId);
-      if (user && ['admin', 'teacher'].includes(user.role)) {
+      const user = await db.User.findByPk(req.session.user.id);
+      if (user && ['admin', 'teacher', 'staff'].includes(user.role)) {
         req.user = user; // Attach user to request
         return next();
       } else {

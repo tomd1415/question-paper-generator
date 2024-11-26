@@ -42,7 +42,7 @@ module.exports = (sequelize) => {
       allowNull: true,
     },
     options: { // JSON field for options (if multiple-choice)
-      type: DataTypes.ARRAY(DataTypes.STRING),
+      type: DataTypes.JSONB,
       allowNull: true,
     },
     answer: { // Correct answer

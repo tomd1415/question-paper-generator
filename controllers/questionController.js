@@ -23,14 +23,15 @@ const getGenerateQuestionsPage = async (req, res) => {
 };
 
 const generateQuestions = async (req, res) => {
+  const transaction = await db.sequelize.transaction();
   try {
     console.log('generateQuestions - req.user:', req.user); // Debug log
-
 
     const { prompt, subject, title } = req.body;
 
     // Ensure prompt is a string
     if (typeof prompt !== 'string' || !prompt.trim()) {
+      await transaction.rollback();
       return res.status(400).send('Invalid prompt provided.');
     }
 
@@ -53,11 +54,12 @@ const generateQuestions = async (req, res) => {
     } catch (parseError) {
       console.error('Error parsing JSON:', parseError);
       console.error('Assistant Reply:', assistantReply);
+      await transaction.rollback();
       return res.status(500).send('Failed to parse generated questions. Ensure the prompt requests JSON output.');
     }
 
-    // Validate the generated data
     if (!generatedData.questions || !Array.isArray(generatedData.questions)) {
+      await transaction.rollback();
       return res.status(400).send('Invalid questions format received from AI.');
     }
 
@@ -70,11 +72,17 @@ const generateQuestions = async (req, res) => {
       title: generatedData.title || title,
       subjectId: subject,
       // Add other necessary fields
-    });
+    }, { transaction });
 
     // Save questions to the database
     for (let i = 0; i < generatedData.questions.length; i++) {
       const q = generatedData.questions[i];
+
+      // Validate options if multiple-choice
+      if (q.options && !Array.isArray(q.options)) {
+        throw new Error('Options must be an array for multiple-choice questions.');
+      }
+
       await db.Question.create({
         paperId: paper.id,
         questionNumber: i + 1,
@@ -82,17 +90,20 @@ const generateQuestions = async (req, res) => {
         questionText: q.text || q.questionText,
         marks: q.marks || 1,
         codeSnippet: q.code || q.codeSnippet || null,
-        options: q.options || null,
+        options: Array.isArray(q.options) ? q.options : null,
         answer: q.answer || null,
-        questionType: q.options ? 'multiple-choice' : 'short-answer',
+        questionType: Array.isArray(q.options) ? 'multiple-choice' : 'short-answer',
         // Add other necessary fields
-      });
+      }, { transaction });
     }
+
+    await transaction.commit();
 
     // Redirect to a page to view the generated paper
     res.redirect(`/papers/${paper.id}`);
 
   } catch (error) {
+    await transaction.rollback();
     console.error('Error generating questions:', error);
     res.status(500).send('An error occurred while generating questions.');
   }

@@ -7,8 +7,6 @@ const SequelizeStore = require('connect-session-sequelize')(session.Store);
 const dotenv = require('dotenv');
 const flash = require('connect-flash');
 const app = express();
-const adminRouter = require('./routes/admin');
-const usersRouter = require('./routes/users'); // Import usersRouter
 
 // Load environment variables
 dotenv.config();
@@ -32,15 +30,14 @@ const sessionStore = new SequelizeStore({
   db: db.sequelize,
 });
 
+// Sync session store
+sessionStore.sync();
+
+// Use session middleware
 app.use(
   session({
     secret: process.env.SESSION_SECRET || 'your_secret_key',
-    store: new SequelizeStore({
-      db: db.sequelize,
-      tableName: 'Sessions', // Optional, defaults to 'Sessions'
-      // Check out the documentation for additional options:
-      // https://github.com/mweibel/connect-session-sequelize#options
-    }),
+    store: sessionStore,
     resave: false,
     saveUninitialized: false,
     cookie: {
@@ -51,9 +48,7 @@ app.use(
   })
 );
 
-//sessionStore.sync();
-db.sequelize.sync(); // Ensure the session table is created
-
+// Use flash for flash messages
 app.use(flash());
 
 // Make flash messages available in all views
@@ -64,11 +59,14 @@ app.use((req, res, next) => {
   next();
 });
 
-// Register Routes After Middleware
+// Import routers
+const adminRouter = require('./routes/admin');
+const usersRouter = require('./routes/users'); // Import usersRouter
 const indexRouter = require('./routes/index');
 const questionsRouter = require('./routes/questions');
 const saveRouter = require('./routes/save');
 
+// Register Routes After Middleware
 app.use('/', indexRouter);
 app.use('/users', usersRouter); // Register usersRouter
 app.use('/questions', questionsRouter);
