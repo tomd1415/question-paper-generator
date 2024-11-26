@@ -5,26 +5,101 @@
 <head>
     <title>Generate Questions</title>
     <link rel="stylesheet" type="text/css" href="/css/generatequestions.css">
-    <script src="/js/generatequestions.js"></script>
+    <script src="/js/generatequestions.js" defer></script>
 </head>
 <body>
 
 <div class="container">
     <h1>Generate Questions</h1>
-    <!-- Add your form and inputs for generating questions here -->
     <form id="generateForm" method="post" action="/questions/generate">
-        <label for="promptInput">Enter Prompt:</label><br>
-        <textarea id="promptInput" name="prompt" rows="5" cols="80"></textarea><br><br>
-        <label for="subjectSelect">Select Subject:</label><br>
-        <select id="subjectSelect" name="subject">
-            <!-- Options populated from the database -->
-            <% subjects.forEach(function(subject) { %>
-                <option value="<%= subject.subject_id %>"><%= subject.subject_name %></option>
-            <% }); %>
-        </select><br><br>
-        <button type="submit">Generate Questions</button>
+        <div class="form-section">
+            <label for="titleInput">Title:</label>
+            <input type="text" id="titleInput" name="title" required>
+        </div>
+
+        <div class="form-section">
+            <label for="subjectInput">Subject:</label>
+            <select id="subjectInput" name="subject" required>
+                <% subjects.forEach(function(subject) { %>
+                    <option value="<%= subject.id %>"><%= subject.name %></option>
+                <% }); %>
+            </select>
+        </div>
+
+        <div class="form-section">
+            <label for="specificationInput">Specification/Curriculum Guidelines:</label>
+            <textarea id="specificationInput" name="specification" rows="3" required></textarea>
+        </div>
+
+        <div class="form-section">
+            <label for="difficultyInput">Difficulty Level:</label>
+            <select id="difficultyInput" name="difficulty" required>
+                <option value="easy">Easy</option>
+                <option value="medium">Medium</option>
+                <option value="hard">Hard</option>
+            </select>
+        </div>
+
+        <div class="form-section">
+            <label for="numQuestionsInput">Number of Questions:</label>
+            <input type="number" id="numQuestionsInput" name="numQuestions" min="1" required>
+        </div>
+
+        <div class="form-section">
+            <label for="exampleQuestionsInput">Example Questions (one per line):</label>
+            <textarea id="exampleQuestionsInput" name="exampleQuestions" rows="4"></textarea>
+        </div>
+
+        <div class="form-section">
+            <label for="topicsInput">Topics to Cover (one per line):</label>
+            <textarea id="topicsInput" name="topics" rows="4" required></textarea>
+        </div>
+
+        <div class="form-section">
+            <label for="topicFocusSelect">Topic Focus:</label>
+            <select id="topicFocusSelect" name="topicFocus" required>
+                <option value="only">Only listed topics</option>
+                <option value="mostly">Mostly listed topics</option>
+            </select>
+        </div>
+
+        <div class="form-section">
+            <button type="button" onclick="generatePrompt()">Generate Prompt</button>
+        </div>
+
+        <div class="form-section">
+            <label for="promptOutput">Generated Prompt:</label>
+            <textarea id="promptOutput" name="prompt" rows="10" readonly></textarea>
+        </div>
+
+        <div class="form-section">
+            <button type="submit">Submit to Generate Questions</button>
+        </div>
     </form>
 </div>
+
+<!-- Add event listeners to input fields to generate prompt in real-time -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const formFields = [
+            'titleInput',
+            'subjectInput',
+            'specificationInput',
+            'difficultyInput',
+            'numQuestionsInput',
+            'exampleQuestionsInput',
+            'topicsInput',
+            'topicFocusSelect'
+        ];
+
+        formFields.forEach(function(fieldId) {
+            const field = document.getElementById(fieldId);
+            if (field) {
+                field.addEventListener('input', generatePrompt);
+            }
+        });
+    });
+</script>
 
 </body>
 </html>

@@ -3,10 +3,10 @@
 const express = require('express');
 const router = express.Router();
 const adminController = require('../controllers/adminController');
-//const adminAuth = require('../middlewares/adminAuth');
+const adminAuth = require('../middlewares/adminAuth');
 
 // Apply adminAuth middleware to all admin routes
-//router.use(adminAuth);
+router.use(adminAuth);
 
 // GET request to display the Add User page
 router.get('/add-user', adminController.getAddUserPage);

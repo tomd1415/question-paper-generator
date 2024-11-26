@@ -13,11 +13,11 @@ function initializePage() {
 
 function generatePrompt() {
     // Get user inputs
+    var title = document.getElementById('titleInput').value.trim();
     var subject = document.getElementById('subjectInput').value.trim();
     var specification = document.getElementById('specificationInput').value.trim();
     var difficulty = document.getElementById('difficultyInput').value.trim();
     var numQuestions = document.getElementById('numQuestionsInput').value.trim();
-    var title = document.getElementById('titleInput').value.trim();
     var exampleQuestionsText = document.getElementById('exampleQuestionsInput').value.trim();
     var topicsText = document.getElementById('topicsInput').value.trim();
     var topicFocus = document.getElementById('topicFocusSelect').value;
@@ -38,17 +38,18 @@ function generatePrompt() {
 
     // Build the prompt
     var prompt = `
-**Instructions for the AI System:**
+# Question Generation Prompt
 
-- **Audience and Language:**
-  - Generate a set of educational questions for a **UK school audience**, written in **British English**.
+- **Title:** ${title}
 
-- **Subject and Specification:**
-  - **Subject:** *${subject}*.
-  - **Specification/Curriculum Guidelines:** *${specification}*.
+- **Subject:** ${subject}
 
-- **Difficulty Level:**
-  - The questions should be appropriate for students who are *${difficulty}*.
+- **Specification/Curriculum Guidelines:** ${specification}
+
+- **Difficulty Level:** ${difficulty}
+
+- **Number of Questions:** ${numQuestions}
+
 `;
 
     // Add topics if provided
@@ -63,11 +64,11 @@ function generatePrompt() {
         // Add topic focus
         if (topicFocus === 'only') {
             prompt += `
-  - Focus: Only generate questions related to the listed topics.
+- **Focus:** Only generate questions related to the listed topics.
 `;
         } else if (topicFocus === 'mostly') {
             prompt += `
-  - Focus: Primarily generate questions related to the listed topics but include a few questions from related topics.
+- **Focus:** Primarily generate questions related to the listed topics but include a few questions from related topics.
 `;
         }
     }
@@ -99,19 +100,14 @@ function generatePrompt() {
   - **Field Descriptions:**
     - \`"title"\`: The title of the question paper.
     - \`"questions"\`: An array of question objects.
-      - \`"text"\`: The question text.
-      - \`"marks"\`: The number of marks allocated for the question.
-      - \`"code"\` (optional): Any relevant code snippets (for programming questions).
-      - \`"options"\` (optional): An array of answer options (for multiple-choice questions).
-      - \`"answer"\`: The correct answer or a detailed explanation.
 
-- **Number of Questions:**
-  - Generate **${numQuestions}** questions.
-
-- **Example Questions:**
 `;
 
+    // Add example questions if any
     if (exampleQuestions.length > 0) {
+        prompt += `
+- **Example Questions:**
+`;
         for (var i = 0; i < exampleQuestions.length; i++) {
             prompt += `  ${i + 1}. "${exampleQuestions[i]}"\n`;
         }
@@ -119,11 +115,18 @@ function generatePrompt() {
 - **Important Note:** Do not include the example questions as questions in the output.
 `;
     } else {
-        prompt += `  - No example questions provided.
+        prompt += `
+- **Example Questions:**
+  - No example questions provided.
 `;
     }
 
-    // Set the generated prompt in the output textarea
+    // Output the generated prompt to the page
     document.getElementById('promptOutput').value = prompt;
 }
+
+// Initialize the page (if needed)
+document.addEventListener('DOMContentLoaded', function() {
+    // Any initialization code can go here
+});
 

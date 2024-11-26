@@ -1,6 +1,7 @@
 // controllers/questionController.js
 
 const db = require('../models');
+const bcrypt = require('bcryptjs');
 
 exports.getGenerateQuestionsPage = async (req, res) => {
   try {
@@ -15,12 +16,22 @@ exports.getGenerateQuestionsPage = async (req, res) => {
 
 exports.generateQuestions = async (req, res) => {
   try {
-    const { prompt, subject } = req.body;
+    const { prompt, subject, title } = req.body;
 
-    // Logic to generate questions based on the prompt
-    // ...
+    // Here you can integrate with an AI service or your question generation logic
+    // For example, sending the prompt to OpenAI's API and receiving generated questions
 
-    // Redirect or render the generated questions
+    // Example pseudo-code:
+    /*
+    const generatedQuestions = await aiService.generateQuestions(prompt);
+    // Save the generated questions to the database
+    await db.Question.bulkCreate(generatedQuestions);
+    */
+
+    // For demonstration, we'll just log the prompt
+    console.log('Received Prompt:', prompt);
+
+    // Redirect to an edit page or display the generated questions
     res.redirect('/questions/edit'); // Update as needed
   } catch (error) {
     console.error('Error generating questions:', error);

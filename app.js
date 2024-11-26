@@ -8,6 +8,7 @@ const dotenv = require('dotenv');
 const flash = require('connect-flash');
 const app = express();
 const adminRouter = require('./routes/admin');
+const usersRouter = require('./routes/users'); // Import usersRouter
 
 // Load environment variables
 dotenv.config();
@@ -19,7 +20,7 @@ app.set('view engine', 'ejs'); // Assuming you are using EJS templates
 // Serve static files from 'public' directory
 app.use(express.static(path.join(__dirname, 'public')));
 
-// **Move Body-Parsing Middleware Here**
+// Body-parsing middleware
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
@@ -38,7 +39,8 @@ app.use(
     resave: false,
     saveUninitialized: false,
     cookie: {
-      secure: false, // Set to true if using HTTPS
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production', // Ensures the browser only sends the cookie over HTTPS in production
       maxAge: 2 * 60 * 60 * 1000, // Session expires after 2 hours
     },
   })
@@ -55,16 +57,15 @@ app.use((req, res, next) => {
   next();
 });
 
-// **Register Routes After Middleware**
+// Register Routes After Middleware
 const indexRouter = require('./routes/index');
-const usersRouter = require('./routes/users');
 const questionsRouter = require('./routes/questions');
 const saveRouter = require('./routes/save');
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.use('/users', usersRouter); // Register usersRouter
 app.use('/questions', questionsRouter);
-app.use('/admin', adminRouter); // Ensure admin routes are registered here
+app.use('/admin', adminRouter);
 app.use('/save', saveRouter);
 
 // Error handling middleware
