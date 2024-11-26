@@ -90,6 +90,12 @@ module.exports = (sequelize) => {
       as: 'pupilAnswers',
       onDelete: 'CASCADE',
     });
+
+    // Question -> Response (One-to-Many)
+    Question.hasMany(models.Response, {
+      foreignKey: 'questionId',
+      as: 'responses',
+    });
   };
 
   return Question;

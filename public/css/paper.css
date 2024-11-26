@@ -1,29 +1,28 @@
-/* paper.css */
+/* public/css/paper.css */
 
 /* General Styles */
 body {
     font-family: 'Times New Roman', Times, serif;
     margin: 40px;
-    color: #000;
     background-color: #fff;
+    color: #000;
 }
 
 /* Header */
 .header {
     text-align: center;
-    border-bottom: 2px solid #000;
-    padding-bottom: 10px;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
 }
 
 .header h1 {
     font-size: 24px;
     margin: 0;
+    text-transform: uppercase;
 }
 
 /* Information Section */
 .info {
-    margin-bottom: 30px;
+    margin-bottom: 20px;
 }
 
 .info p {
@@ -31,87 +30,155 @@ body {
     margin: 5px 0;
 }
 
-/* Question Styles */
-.question {
-    margin-bottom: 25px;
+.info label {
+    font-weight: bold;
 }
 
-.question h3 {
-    font-size: 18px;
-    margin-bottom: 10px;
-    counter-increment: question;
+.info input {
+    font-size: 16px;
+    padding: 5px;
+    width: 300px;
+}
+
+/* Question Styles */
+.question {
+    margin-bottom: 40px;
+    page-break-inside: avoid;
 }
 
 .question p {
     font-size: 16px;
     margin-bottom: 10px;
-    text-align: justify;
 }
 
-.question pre {
+.question ol.options-list {
+    list-style-type: lower-alpha;
+    margin-left: 40px;
+}
+
+.question ol.options-list li {
+    margin-bottom: 5px;
+}
+
+/* Code Block */
+.code-block code {
+    display: block;
     background-color: #f4f4f4;
     padding: 10px;
-    border: 1px solid #ddd;
     overflow-x: auto;
+    border: 1px solid #ccc;
 }
 
-/* Multiple Choice Options */
-.question ul {
-    list-style-type: lower-alpha;
-    padding-left: 20px;
+/* Answer Space */
+.answer-space {
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 
-.question li {
-    margin-bottom: 5px;
+.answer-space textarea {
+    width: 100%;
+    height: 200px;
     font-size: 16px;
+    border: 1px solid #000;
+    padding: 10px;
+    resize: vertical;
+    box-sizing: border-box;
+}
+
+/* Adjust textarea height based on data-marks attribute */
+.answer-space textarea[data-marks] {
+    height: calc(100px + (20px * attr(data-marks number)));
+}
+
+/* Correct Answer */
+.correct-answer {
+    background-color: #e0ffe0;
+    padding: 10px;
+    margin-top: 10px;
+    border: 1px solid #0a0;
+}
+
+.correct-answer strong {
+    display: block;
+    margin-bottom: 5px;
+}
+
+/* Comment Space */
+.comment-space {
+    margin-top: 10px;
+}
+
+.comment-space textarea {
+    width: 100%;
+    height: 100px;
+    font-size: 16px;
+    border: 1px solid #000;
+    padding: 10px;
+    resize: vertical;
+    box-sizing: border-box;
+}
+
+/* Hide elements when printing */
+@media print {
+    /* Hide 'Reveal Answer' buttons */
+    .answer-space button,
+    .reveal-answer-btn {
+        display: none;
+    }
+
+    /* Hide 'Reveal Answer' button if the answer box is read-only or already filled */
+    .answer-space textarea[readonly] + button {
+        display: none;
+    }
+
+    /* Show answer textareas with borders for handwritten answers */
+    .answer-space textarea {
+        border: 1px solid #000;
+    }
+
+    /* Hide comment spaces unless they contain text */
+    .comment-space {
+        display: none;
+    }
+
+    .comment-space textarea:not(:placeholder-shown) {
+        display: block;
+    }
+
+    /* Prevent page breaks inside questions */
+    .question {
+        page-break-inside: avoid;
+    }
 }
 
 /* Footer */
 .footer {
-    border-top: 2px solid #000;
-    padding-top: 10px;
     text-align: center;
-    margin-top: 30px;
+    margin-top: 40px;
+    border-top: 1px solid #000;
+    padding-top: 10px;
 }
 
 .footer p {
     font-size: 16px;
-    margin: 0;
 }
 
 /* Page Numbering */
 @media print {
     body {
+        counter-reset: page;
+    }
+
+    .footer::after {
+        counter-increment: page;
+        content: "Page " counter(page);
+        position: fixed;
+        bottom: 10px;
+        right: 10px;
+        font-size: 12px;
+    }
+
+    @page {
         margin: 20mm;
     }
-
-    .header, .footer, .info, .controls {
-        page-break-after: avoid;
-    }
-
-    /* Add page numbers at the bottom */
-    .footer::after {
-        content: "Page " counter(page);
-        position: absolute;
-        bottom: 10px;
-        right: 20px;
-        font-size: 14px;
-    }
-}
-
-/* Optional Enhancements */
-.container {
-    max-width: 800px;
-    margin: 0 auto;
-}
-
-.controls {
-    margin-bottom: 20px;
-}
-
-.controls button {
-    padding: 8px 16px;
-    font-size: 14px;
-    margin-right: 10px;
-    cursor: pointer;
 }

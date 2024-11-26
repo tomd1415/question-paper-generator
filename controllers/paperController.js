@@ -124,3 +124,40 @@ exports.updatePaper = async (req, res) => {
       res.status(500).send('An error occurred while updating the paper.');
     }
   };
+
+// controllers/paperController.js
+
+exports.saveResponses = async (req, res) => {
+  try {
+    const { pupilName, responses, paperId } = req.body;
+
+    // Find or create the pupil
+    let pupil = await db.Pupil.findOne({ where: { name: pupilName } });
+    if (!pupil) {
+      pupil = await db.Pupil.create({ name: pupilName });
+    }
+
+    // Save each response
+    for (let i = 0; i < responses.length; i++) {
+      const response = responses[i];
+      if (response) {
+        const question = await db.Question.findOne({
+          where: { paperId: paperId, questionNumber: i + 1 },
+        });
+
+        await db.Response.create({
+          answerText: response.answer,
+          comment: response.comment,
+          questionId: question.id,
+          pupilId: pupil.id,
+          paperId: paperId,
+        });
+      }
+    }
+
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Error saving responses:', error);
+    res.status(500).json({ success: false, error: 'Failed to save responses.' });
+  }
+};

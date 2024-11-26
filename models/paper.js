@@ -60,6 +60,10 @@ module.exports = (sequelize) => {
       as: 'questions',
       onDelete: 'CASCADE',
     });
+    Paper.hasMany(models.Response, {
+      foreignKey: 'paperId',
+      as: 'responses',
+    });
     // **New Association**
     Paper.belongsTo(models.Subject, {
       foreignKey: 'subjectId',

@@ -14,27 +14,134 @@
   <div class="info">
     <p><strong>Subject:</strong> <%= paper.subject.name %></p>
     <p><strong>Date:</strong> <%= paper.date ? paper.date.toDateString() : 'N/A' %></p>
+    <p>
+      <label for="pupilName"><strong>Pupil Name:</strong></label>
+      <input type="text" id="pupilName" placeholder="Enter your name" size="30">
+    </p>
   </div>
 
-  <% paper.questions.forEach(function(question) { %>
-    <div class="question">
-      <h3>Question <%= question.questionNumber %> (<%= question.marks %> marks)</h3>
-      <p><%= question.questionText %></p>
-      <% if (question.codeSnippet) { %>
-        <pre><code><%= question.codeSnippet %></code></pre>
-      <% } %>
-      <% if (question.options && question.options.length > 0) { %>
-        <ul>
-          <% question.options.forEach(function(option) { %>
-            <li><%= option %></li>
-          <% }); %>
-        </ul>
-      <% } %>
-    </div>
-  <% }); %>
+  <div id="questionsContainer">
+    <% paper.questions.forEach((question, index) => { %>
+      <div class="question">
+        <p><strong><%= index + 1 %>.</strong> <%= question.questionText %> (<%= question.marks %> marks)</p>
+
+        <% if (question.options && question.options.length > 0) { %>
+          <ol class="options-list">
+            <% question.options.forEach(option => { %>
+              <li><%= option %></li>
+            <% }); %>
+          </ol>
+        <% } %>
+
+        <div class="answer-space" data-marks="<%= question.marks %>">
+          <textarea data-question-number="<%= index %>" data-marks="<%= question.marks %>"></textarea>
+          <button data-question-number="<%= index %>">Reveal Answer</button>
+        </div>
+
+        <div class="correct-answer" style="display: none;">
+          <strong>Correct Answer:</strong><br>
+          <%= question.answer %>
+        </div>
+
+        <div class="comment-space" style="display: none;">
+          <textarea placeholder="Enter your comments here..." data-question-number="<%= index %>"></textarea>
+        </div>
+      </div>
+    <% }); %>
+  </div>
 
   <div class="footer">
     <p>End of Paper</p>
   </div>
+  <script>
+    function initializePage() {
+      // Add event listeners for answer textareas
+      var answerTextareas = document.querySelectorAll('.answer-space textarea');
+      answerTextareas.forEach(function (textarea) {
+        textarea.oninput = saveResponses;
+      });
+  
+      // Add event listeners for "Reveal Answer" buttons
+      var revealButtons = document.querySelectorAll('.answer-space button');
+      revealButtons.forEach(function (button) {
+        button.onclick = function () {
+          var questionIndex = this.getAttribute('data-question-number');
+          revealAnswer(questionIndex);
+        };
+      });
+    }
+  
+    function revealAnswer(questionIndex) {
+      // Lock the answer textarea
+      var answerTextarea = document.querySelector(
+        '.answer-space textarea[data-question-number="' + questionIndex + '"]'
+      );
+      if (answerTextarea) {
+        answerTextarea.readOnly = true;
+      }
+  
+      // Reveal the correct answer
+      var correctAnswerDiv = document.querySelectorAll('.correct-answer')[questionIndex];
+      if (correctAnswerDiv) {
+        correctAnswerDiv.style.display = 'block';
+      }
+  
+      // Show the comment box
+      var commentDiv = document.querySelectorAll('.comment-space')[questionIndex];
+      if (commentDiv) {
+        commentDiv.style.display = 'block';
+      }
+  
+      // Disable the "Reveal Answer" button
+      var revealButton = document.querySelector(
+        '.answer-space button[data-question-number="' + questionIndex + '"]'
+      );
+      if (revealButton) {
+        revealButton.disabled = true;
+      }
+  
+      // Save the response
+      saveResponses();
+    }
+  
+    function saveResponses() {
+      var pupilName = document.getElementById('pupilName').value.trim();
+      var responses = [];
+  
+      var answerTextareas = document.querySelectorAll('.answer-space textarea');
+      answerTextareas.forEach(function (textarea) {
+        var questionIndex = textarea.getAttribute('data-question-number');
+        responses[questionIndex] = responses[questionIndex] || {};
+        responses[questionIndex].answer = textarea.value;
+      });
+  
+      var commentTextareas = document.querySelectorAll('.comment-space textarea');
+      commentTextareas.forEach(function (textarea) {
+        var questionIndex = textarea.getAttribute('data-question-number');
+        responses[questionIndex] = responses[questionIndex] || {};
+        responses[questionIndex].comment = textarea.value;
+      });
+  
+      // Send data to the server
+      fetch('/saveResponses', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          pupilName: pupilName,
+          responses: responses,
+          paperId: '<%= paper.id %>',
+        }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          console.log('Responses saved:', data);
+        })
+        .catch((error) => {
+          console.error('Error saving responses:', error);
+        });
+    }
+  
+    window.onload = initializePage;
+  </script>
 </body>
 </html>
