@@ -1,0 +1,13 @@
+{
+    "watch": ["models", "routes", "middlewares", "config", "public", "views", "app.js"],
+    "ext": "js,json",
+    "ignore": ["node_modules"],
+    "exec": "node --inspect app.js",
+    "delay": "1000",
+    "env": {
+      "NODE_ENV": "development"
+    },
+    "verbose": true
+  }
+  
+  

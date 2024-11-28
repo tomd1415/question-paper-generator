@@ -1,0 +1,26 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        
+
+
+      {
+        "name": "Debug with Nodemon",
+        "type": "node",
+        "request": "launch",
+        "runtimeExecutable": "nodemon",
+        "program": "/home/duguid/Documents/Projects/question_gen/app.js", // Replace with your entry point
+        "restart": true,
+        "console": "integratedTerminal",
+        "internalConsoleOptions": "neverOpen",
+        "env": {
+          "NODE_ENV": "development"
+        },
+        "runtimeArgs": [
+          "--inspect"
+        ],
+        "skipFiles": ["<node_internals>/**"]
+      }
+    ]
+  }
+  

@@ -7,51 +7,81 @@
   <link rel="stylesheet" type="text/css" href="/css/paper.css">
 </head>
 <body>
-  <div class="header">
-    <h1><%= paper.title %></h1>
-  </div>
+  <div class="wrapper">
+    <div class="header">
+      <h1><%= paper.title %></h1>
+    </div>
 
-  <div class="info">
-    <p><strong>Subject:</strong> <%= paper.subject.name %></p>
-    <p><strong>Date:</strong> <%= paper.date ? paper.date.toDateString() : 'N/A' %></p>
-    <p>
-      <label for="pupilName"><strong>Pupil Name:</strong></label>
-      <input type="text" id="pupilName" placeholder="Enter your name" size="30">
-    </p>
-  </div>
+    <div class="info">
+      <p><strong>Subject:</strong> <%= paper.subject.name %></p>
+      <p><strong>Date:</strong> <%= paper.date ? paper.date.toDateString() : 'N/A' %></p>
+      <p>
+        <label for="pupilName"><strong>Pupil Name:</strong></label>
+        <input type="text" id="pupilName" placeholder="Enter your name" size="30">
+      </p>
+    </div>
 
-  <div id="questionsContainer">
-    <% paper.questions.forEach((question, index) => { %>
+    <div id="questionsContainer">
+      <% paper.questions.forEach((question, index) => { %>
+        <div class="question">
+          <p><strong><%= index + 1 %>.</strong> <%= question.questionText %> (<%= question.marks %> marks)</p>
+          
+          <!-- If there are options (for multiple-choice questions) -->
+          <% if (question.options && question.options.length > 0) { %>
+            <ol class="options-list">
+              <% question.options.forEach(option => { %>
+                <li><%= option %></li>
+              <% }); %>
+            </ol>
+          <% } %>
+          
+          <!-- Answer Space -->
+          <div class="answer-space">
+            <textarea
+              data-question-number="<%= index %>"
+              data-marks="<%= question.marks %>"></textarea>
+            <button data-question-number="<%= index %>">Reveal Answer</button>
+          </div>
+
+          <!-- Correct Answer (hidden by default) -->
+          <div class="correct-answer" style="display: none;">
+            <strong>Correct Answer:</strong><br>
+            <%= question.answer %>
+          </div>
+
+          <!-- Comment Space (hidden until needed) -->
+          <div class="comment-space" style="display: none;">
+            <textarea placeholder="Enter your comments here..." data-question-number="<%= index %>"></textarea>
+          </div>
+        </div>
+      <% }); %>
       <div class="question">
-        <p><strong><%= index + 1 %>.</strong> <%= question.questionText %> (<%= question.marks %> marks)</p>
-
-        <% if (question.options && question.options.length > 0) { %>
-          <ol class="options-list">
-            <% question.options.forEach(option => { %>
-              <li><%= option %></li>
-            <% }); %>
-          </ol>
-        <% } %>
-
-        <div class="answer-space" data-marks="<%= question.marks %>">
-          <textarea data-question-number="<%= index %>" data-marks="<%= question.marks %>"></textarea>
-          <button data-question-number="<%= index %>">Reveal Answer</button>
+        <p><strong><%= paper.questions.length + 1 %>.</strong> Explain the concept of polymorphism in object-oriented programming. (5 marks)</p>
+        
+        <!-- Answer Space -->
+        <div class="answer-space">
+          <textarea
+            data-question-number="<%= paper.questions.length %>"
+            data-marks="5"></textarea>
+          <button data-question-number="<%= paper.questions.length %>">Reveal Answer</button>
         </div>
 
+        <!-- Correct Answer (hidden by default) -->
         <div class="correct-answer" style="display: none;">
           <strong>Correct Answer:</strong><br>
-          <%= question.answer %>
+          Polymorphism allows objects of different classes to be treated as objects of a common superclass.
         </div>
 
+        <!-- Comment Space (hidden until needed) -->
         <div class="comment-space" style="display: none;">
-          <textarea placeholder="Enter your comments here..." data-question-number="<%= index %>"></textarea>
+          <textarea placeholder="Enter your comments here..." data-question-number="<%= paper.questions.length %>"></textarea>
         </div>
       </div>
-    <% }); %>
-  </div>
+    </div>
 
-  <div class="footer">
-    <p>End of Paper</p>
+    <div class="footer">
+      <p>End of Paper</p>
+    </div>
   </div>
   <script>
     function initializePage() {
@@ -141,7 +171,54 @@
         });
     }
   
-    window.onload = initializePage;
+    function adjustAnswerSpaces() {
+      var answerTextareas = document.querySelectorAll('.answer-space textarea');
+      answerTextareas.forEach(function(textarea) {
+        var marksAttr = textarea.getAttribute('data-marks');
+        console.log('marksAttr:', marksAttr);
+        var marks = parseInt(marksAttr, 10);
+        console.log('Parsed marks:', marks);
+        if (isNaN(marks) || marks <= 0) {
+          marks = 1; // Default to 1 mark if not specified or invalid
+        }
+
+        // Get computed styles
+        var computedStyle = window.getComputedStyle(textarea);
+
+        // Get line height
+        var lineHeightStr = computedStyle.lineHeight;
+        var lineHeight = parseInt(lineHeightStr, 10);
+        if (isNaN(lineHeight)) {
+          // Set a default line height if unable to parse
+          lineHeight = 20; // You can adjust this value
+        }
+        console.log('lineHeight:', lineHeight);
+
+        // Get padding
+        var paddingTop = parseInt(computedStyle.paddingTop, 10);
+        var paddingBottom = parseInt(computedStyle.paddingBottom, 10);
+        var padding = paddingTop + paddingBottom;
+        console.log('padding:', padding);
+
+        // Get border widths
+        var borderTop = parseInt(computedStyle.borderTopWidth, 10);
+        var borderBottom = parseInt(computedStyle.borderBottomWidth, 10);
+        var border = borderTop + borderBottom;
+        console.log('border:', border);
+
+        // Calculate height
+        var height = (lineHeight * 2 * marks) + padding + border;
+        console.log('Calculated height:', height);
+
+        // Set height
+        textarea.style.height = height + 'px';
+      });
+    }
+  
+    window.onload = function() {
+      initializePage();
+      adjustAnswerSpaces();
+    };
   </script>
 </body>
 </html>

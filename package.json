@@ -4,8 +4,10 @@
   "description": "A web application to generate question papers from JSON files.",
   "main": "app.js",
   "scripts": {
-    "start": "node app.js"
+    "start": "node yourapp.js",
+    "dev": "nodemon yourapp.js"
   },
+  
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.1",
@@ -22,5 +24,8 @@
     "sequelize-cli": "^6.6.2"
   },
   "author": "Tom Duguid",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^3.1.7"
+  }
 }
