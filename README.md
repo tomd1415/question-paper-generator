@@ -1,6 +1,6 @@
 # Question Paper Generator
 
-An open-source web application designed to streamline the creation, distribution, and grading of educational assessments. It provides educators with tools to generate question papers, edit questions, incorporate images, and automatically mark certain question types.
+An open-source web application designed to streamline the creation, distribution, and grading of educational assessments. It provides educators with tools to generate question papers, edit questions, incorporate images, and automatically mark certain question types. Pupils can interact with these papers, answer questions, and receive immediate feedback.
 
 ## Table of Contents
 
@@ -9,19 +9,26 @@ An open-source web application designed to streamline the creation, distribution
 - [Project Structure](#project-structure)
 - [Technologies Used](#technologies-used)
 - [Installation](#installation)
+- [Configuration](#configuration)
+- [Usage](#usage)
+- [Database Setup](#database-setup)
+- [Next Steps](#next-steps)
+- [Contributing](#contributing)
+- [License](#license)
+- [Contact](#contact)
 
 ---
 
 ## Introduction
 
-The Question Paper Generator is a web application designed to streamline the creation, distribution, and grading of educational assessments. Teachers can generate question papers, edit questions, incorporate images, and automatically mark certain question types. Pupils can interact with these papers, answer questions, and receive immediate feedback.
+The Question Paper Generator is a comprehensive web application aimed at simplifying the process of creating and managing educational assessments. The platform allows educators to generate customized question papers, edit and save changes directly, and provides a user-friendly interface for pupils to engage with the assessments.
 
 ---
 
 ## Features
 
-- **Question Generation**: Generate questions from JSON files or by pasting JSON directly into the application.
-- **Question Editing**: Edit questions and answers directly within the application. Changes are automatically saved to the database.
+- **Question Generation**: Create question papers from a database of questions, with options to specify topics, difficulty levels, and question types.
+- **Question Editing**: Edit questions and answers directly within the application. All changes are automatically saved to the database.
 - **User Authentication**: Secure login for staff and pupils, with role-based access control.
 - **Per-Question Answer Reveal**: Pupils can reveal answers for individual questions, locking their responses and allowing for self-assessment.
 - **Pupil Response Tracking**: Store pupil answers connected to the original question sheets and pupil profiles.
@@ -95,27 +102,33 @@ your-project/
 
 ## Technologies Used
 
-### Backend:
-- Node.js
-- Express.js
-- PostgreSQL
-- Sequelize ORM
+### Backend
 
-### Frontend:
-- HTML5
-- CSS3
-- JavaScript (ES6+)
-- EJS Templates
+- **Node.js**
+- **Express.js**
+- **PostgreSQL**
+- **Sequelize ORM**
 
-### Authentication:
-- express-session for session management
-- bcrypt for password hashing
+### Frontend
 
-### File Handling:
-- multer for handling file uploads
+- **HTML5**
+- **CSS3**
+- **JavaScript (ES6+)**
+- **EJS Templates**
 
-### Miscellaneous:
-- dotenv for environment variable management
+### Authentication
+
+- **express-session** for session management
+- **bcryptjs** for password hashing
+- **connect-flash** for flash messages
+
+### File Handling
+
+- **multer** for handling file uploads
+
+### Miscellaneous
+
+- **dotenv** for environment variable management
 
 ---
 
@@ -123,16 +136,16 @@ your-project/
 
 ### Prerequisites
 
-- Node.js (v14 or higher recommended)
-- npm (comes with Node.js)
-- PostgreSQL (v12 or higher)
+- **Node.js** (v14 or higher)
+- **npm** (comes with Node.js)
+- **PostgreSQL** (v12 or higher)
 
 ### Steps
 
-1. **Clone the Repository**:
+1. **Clone the Repository**
 
    ```bash
-   git clone https://github.com/tomd1415/question-paper-generator.git
+   git clone https://github.com/yourusername/question-paper-generator.git
    cd question-paper-generator
    ```
 
@@ -238,165 +251,47 @@ The server will start on the port specified in your `.env` file (default is `300
 
 ## Next Steps
 
-### Phase 1: Database Enhancements
+### Phase 1: Finalizing Core Features
 
-1. **Finalize Database Schema**:
-   - Ensure all necessary tables and relationships are correctly defined.
-   - Include fields for storing metadata, such as timestamps for question creation and updates.
-   - Implement proper indexing for frequently accessed columns to optimise performance.
+- **Complete Database Schema**: Finalize all necessary tables and relationships. Include fields for metadata like timestamps and implement indexing for performance optimization.
+- **Data Validation**: Implement robust validation rules at both the application and database levels to ensure data integrity.
+- **Testing and Bug Fixes**: Conduct thorough testing to identify and fix any existing bugs.
 
-2. **Image Fields**:
-   - Add support for image fields in the `questions` table.
-   - Ensure images can be uploaded securely and linked to specific questions.
+### Phase 2: Enhanced Question Editing and Generation
 
-3. **Data Validation**:
-   - Implement stricter validation rules at the database level to ensure data consistency.
-   - Add constraints to prevent duplicate or invalid entries.
-
-4. **Testing and Optimization**:
-   - Perform load testing to evaluate the database's ability to handle concurrent users.
-   - Optimize queries for better performance, especially for large datasets.
-
----
-
-### Phase 2: Question Editing and Generation
-
-1. **Editable Questions**:
-   - Allow educators to edit questions post-generation.
-   - Ensure all changes are automatically saved to the database.
-
-2. **Advanced Generation Options**:
-   - Add options for educators to specify the difficulty level, topic, and question type during generation.
-   - Include a preview feature to review generated questions before finalizing.
-
-3. **JSON Input Option**:
-   - Enable educators to paste JSON directly into the application for question generation.
-   - Provide a clear JSON schema or template for users to follow.
-
-4. **Real-Time Validation**:
-   - Validate JSON inputs in real time to prevent errors during processing.
-   - Highlight issues and provide suggestions for corrections.
-
----
+- **Dynamic Answer Boxes**: Improve the styling of answer boxes to adjust based on the marks allocated to each question.
+- **Advanced Generation Options**: Allow educators to specify difficulty levels, topics, and question types during question generation.
+- **Question Preview**: Add a preview feature for educators to review questions before finalizing.
 
 ### Phase 3: Printing and Accessibility
 
-1. **Print Formatting**:
-   - Develop enhanced print styles to ensure question papers are well-formatted.
-   - Add page numbering and customizable headers/footers to printed sheets.
+- **Print Formatting**: Enhance print styles to ensure question papers are well-formatted when printed, including consistent margins and borders.
+- **Accessibility Improvements**: Implement features like adjustable font sizes and contrast settings to improve accessibility for all users.
 
-2. **Accessibility Features**:
-   - Allow users to adjust font sizes, line spacing, and contrast settings for better readability.
-   - Ensure the interface is fully navigable using keyboard-only inputs.
+### Phase 4: Authentication and Authorization Enhancements
 
-3. **Answer Sheet Options**:
-   - Provide educators with the option to print answer sheets alongside question papers.
-   - Include a toggle for whether correct answers should be included.
-
-4. **Language and Localisation**:
-   - Add support for generating question papers in multiple languages.
-   - Allow educators to specify language preferences for questions and instructions.
-
----
-
-### Phase 4: Authentication and Authorization
-
-1. **User Registration**:
-   - Implement secure registration for educators and pupils.
-   - Allow registration through invitation links or admin approval for additional security.
-
-2. **Role-Based Access Control (RBAC)**:
-   - Define user roles such as Admin, Teacher, and Pupil.
-   - Restrict access to features based on roles (e.g., only admins can manage user accounts).
-
-3. **Password Management**:
-   - Implement password recovery via email.
-   - Enforce strong password policies and periodic expiration for educators.
-
-4. **Session Management**:
-   - Add session timeouts for idle users.
-   - Provide users with the ability to view and terminate active sessions.
-
----
+- **User Registration**: Implement secure registration processes for educators and pupils.
+- **Role-Based Access Control**: Define user roles and restrict access to features based on roles.
 
 ### Phase 5: Pupil Interaction Enhancements
 
-1. **Lock Answer Boxes**:
-   - Automatically lock answer boxes after pupils reveal the correct answer.
-   - Include a warning or confirmation prompt before locking.
-
-2. **Self-Assessment Comments**:
-   - Provide pupils with a comment box for each question to reflect on their answers.
-   - Allow educators to review these comments as part of assessments.
-
-3. **Enhanced Feedback Mechanism**:
-   - Enable educators to provide detailed feedback for individual answers.
-   - Include an option for pupils to request clarification on feedback.
-
-4. **Answer Tracking**:
-   - Maintain a history of all answers provided by pupils.
-   - Link answers to both the specific question and the pupil profile for detailed reporting.
-
----
+- **Answer Box Locking**: Automatically lock answer boxes after pupils reveal the correct answer.
+- **Self-Assessment Comments**: Allow pupils to add comments for self-assessment, which educators can review.
 
 ### Phase 6: Auto-Marking and Multiple Choice
 
-1. **Auto-Marking Features**:
-   - Extend auto-marking to cover numerical and short-text answers.
-   - Include configurable tolerance levels for numerical answers.
-
-2. **Staff Review Interface**:
-   - Create a dashboard for educators to review auto-marked answers.
-   - Provide an override option for educators to adjust marks manually.
-
-3. **Multiple Choice Enhancements**:
-   - Support for questions with multiple correct answers.
-   - Add an optional penalty for incorrect choices.
-
-4. **Marking Reports**:
-   - Generate detailed marking reports for each pupil.
-   - Include metrics like accuracy, time spent per question, and overall performance trends.
-
----
+- **Expanded Auto-Marking**: Extend auto-marking capabilities to include numerical and short-text answers.
+- **Multiple Correct Answers**: Support questions with multiple correct answers and partial credit.
 
 ### Phase 7: User Interface Improvements
 
-1. **Intuitive Navigation**:
-   - Add breadcrumbs to simplify navigation between sections.
-   - Group related features into clearly labeled menus.
-
-2. **Custom Themes**:
-   - Provide light, dark, and high-contrast themes for the application.
-   - Allow users to save their theme preferences.
-
-3. **Responsive Design**:
-   - Ensure all pages are fully responsive and function well across devices.
-   - Include touch-friendly controls for mobile and tablet users.
-
-4. **Search and Filters**:
-   - Add a search bar for quickly finding questions, pupils, or assessments.
-   - Provide filters for sorting and categorizing question banks.
-
----
+- **Responsive Design**: Ensure the application is fully responsive across all devices.
+- **Custom Themes**: Offer customizable themes, including light and dark modes.
 
 ### Phase 8: Additional Features
 
-1. **Advanced Printing Options**:
-   - Allow educators to configure the number of questions per page.
-   - Include options for adjusting answer box sizes and margins.
-
-2. **Question Type Selection**:
-   - Enable educators to specify the distribution of question types (e.g., 40% multiple-choice, 60% short answer).
-   - Add support for new question types, such as drag-and-drop or interactive elements.
-
-3. **Custom Question Creation**:
-   - Provide an interface for educators to manually create and format questions.
-   - Include templates for common question types to simplify the process.
-
-4. **Image and Diagram Support**:
-   - Add a drag-and-drop interface for uploading images to questions.
-   - Include basic drawing tools for creating diagrams directly in the application.
-
+- **Advanced Printing Options**: Allow customization of print settings such as questions per page and answer box sizes.
+- **Image and Diagram Support**: Enable easy addition of images and diagrams to questions.
 
 ---
 
