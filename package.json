@@ -4,8 +4,8 @@
   "description": "A web application to generate question papers from JSON files.",
   "main": "app.js",
   "scripts": {
-    "start": "node yourapp.js",
-    "dev": "nodemon yourapp.js"
+    "start": "node app.js",
+    "dev": "nodemon app.js"
   },
   
   "dependencies": {
